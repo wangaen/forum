@@ -1,5 +1,7 @@
 # forum
 node+mongodb+express+vue的论坛交流网站
+forum: web端
+forumServer: 服务端
 ## Project setup
 ```
 npm install
