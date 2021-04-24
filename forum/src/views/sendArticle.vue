@@ -73,7 +73,26 @@
     created(){
       this.getForm()
     },
-
+    beforeRouteLeave (to, from, next) {
+      if(to.fullPath == `/?id=${this.$store.getters.getUserID}` || to.fullPath == `/article/details/${this.form.id}`){
+        next()
+      } else {
+        if(this.form.title || this.form.content || this.form.article_img){
+          this.$confirm('你在当前页面已经编辑了文章信息，离开当前页面将会丢失该页面的任何信息。是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            if( this.form.article_img ){
+              this.$Api.deleteImg({url: this.form.article_img}).then(() => {})
+            }
+            next()
+          }).catch(() => {next(false)});
+        }else{
+          next()
+        }
+      }
+    },
     mounted(){},
 
     computed:{},

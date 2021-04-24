@@ -19,7 +19,7 @@
             <div><i class="el-icon-date">{{timeToDate(articleData.created_time)}}</i></div>
             <div>
               <span @click="goLike" :class="{like_color: like_form.status}"><i class="el-icon-thumb">{{articleData.like_num}}</i></span>
-              <span><a href="#comment"><i class="el-icon-chat-dot-round">1000</i></a></span>
+              <span><a href="#comment"><i class="el-icon-chat-dot-round">{{comment_num}}</i></a></span>
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="comment-main" id="comment">
-        <getComment/>
+        <getComment @commentNumAdd="commentNumAdd"/>
       </div>
     </div>
     <div class="article-right">
@@ -66,6 +66,7 @@ import getComment from './getComment'
       return {
         articleData: {},
         show_like_color: false,
+        comment_num: 0,
         user_info: {},
         total_reticle_read_like: [],
         like_form:{
@@ -92,6 +93,7 @@ import getComment from './getComment'
         await this.$Api.getArticleInfo({id: this.$route.params.id}).then(res => {
           if(res.message == 'OK') {
             this.articleData = res.result;
+            this.comment_num = res.result.comment_num
             this.user_info = res.result.user_id
           }
         })
@@ -120,6 +122,9 @@ import getComment from './getComment'
         }else{
           this.$tools.diyTips('您还未登录，请登录后再试！！！', 'error',5000)
         }
+      },
+      commentNumAdd(count){
+        this.comment_num += count
       },
       goUserDetailsInfo(){
         this.$router.push({

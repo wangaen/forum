@@ -23,8 +23,24 @@ var commentSchema = new Schema({
     type: String,
     required: true
   },
+  //评论级别
+  comment_grade: {
+    type: String,
+    enum: ['1', '2', '3'],
+    default: '1'
+  },
+  //父级id
+  parent_id: {
+    type: String,
+    default: ''
+  },
   //评论人id
-  user_id:{
+  from_user_id:{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  //被评论人id
+  to_user_id:{
     type: Schema.Types.ObjectId,
     ref: 'User'
   },

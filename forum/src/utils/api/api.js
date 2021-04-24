@@ -32,20 +32,15 @@ const api = {
   totalReticleReadLikeApi: (req) => {return ApiGet(`/article/total_reticle_read_like`, req)},  //获取总浏览量，点赞总数，文章总数
   uploadArticleImgApi: (req,config) => {return ApiPost(`/article/upload`,req,config)}, //上传文章图片
   addReadNumApi: (req) => {return ApiPost(`/article/add_read_num`, req)}, //每点击一次文章，浏览量 + 1
-  articleUpdate: (req) => {return ApiPut(`/article/update`, req)},
-  articleDelete: (req) => {return ApiDelete(`/article/delete`, req)},
+  articleUpdate: (req) => {return ApiPut(`/article/update`, req)}, //修改文章
+  articleDelete: (req) => {return ApiDelete(`/article/delete`, req)}, //删除文章
+
   /********************************************************************************************************
    ******************************************  comment 评论  *************************************************
    ********************************************************************************************************/
-
   commentAddApi: (req) => {return ApiPost(`/comment/add`,req)}, //添加评论
   commentGetApi: (req) => {return ApiGet(`/comment/get_all`,req)}, //获取某一篇文章下的评论
-
-  /********************************************************************************************************
-   ******************************************  reply 回复  *************************************************
-   ********************************************************************************************************/
-  
-  replyAddApi: (req) => {return ApiPost(`/reply/add`,req)}, //添加回复
+  commentDelete: (req) => {return ApiDelete(`/comment/delete`, req)}, //删除评论
 
   /********************************************************************************************************
    ******************************************  like 点赞  *************************************************

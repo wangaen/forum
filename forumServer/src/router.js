@@ -5,8 +5,8 @@ let mongoose = require('mongoose')
 let User = require('./schema/user')
 let Article = require('./schema/article')
 let Comment = require('./schema/comment')
-let Reply = require('./schema/reply')
 let Like = require('./schema/like')
+
 let md5 = require('blueimp-md5')
 
 let upload = require('./upload')
@@ -14,8 +14,6 @@ let upload = require('./upload')
 let tools = require('./tools/tools')
 
 let api = require('./api/api')
-const { syncIndexes } = require('./schema/user')
-
 
 // 注册
 router.post('/register', async (req,res) => {
@@ -81,14 +79,19 @@ router.post('/login', async (req,res) => {
 
 //删除图片
 router.delete('/delete_img', (req, res) => {
+  let status = false
   let filename = '/uploads/' + req.query.url.split('/')[3]
   if(!tools.deleteFile(`${__dirname}${filename}`)){
+    status = true
     return res.status(200).json({
       type: 'success',
       message: '删除成功',
+      delete_status: status
     })
   }
 })
+
+
 /********************************************************************************************************
  ******************************************  user  *************************************************
 ********************************************************************************************************/
@@ -358,6 +361,7 @@ router.post('/article/send',(req,res) => {
     })
   })
 })
+
 //每点击一次文章浏览量+1
 router.post('/article/add_read_num', async(req,res) => {
   try {
@@ -373,6 +377,7 @@ router.post('/article/add_read_num', async(req,res) => {
     })
   }
 })
+
 //修改文章信息
 router.put('/article/update',async (req,res) => {
   try{
@@ -394,6 +399,7 @@ router.put('/article/update',async (req,res) => {
     })
   }
 })
+
 //删除文章
 router.delete('/article/delete', async (req, res) => {
   try{
@@ -415,14 +421,17 @@ router.delete('/article/delete', async (req, res) => {
     })
   }
 })
+
 /********************************************************************************************************
  ******************************************  comment  *************************************************
 ********************************************************************************************************/
 
 //添加文章评论
 router.post('/comment/add', async (req,res) => {
+  let form = req.body
   try {
     let data = await Comment(req.body).save()
+    await Article.findByIdAndUpdate(form.article_id, {$inc: { comment_num: 1}})
     res.status(200).json({
       message: 'OK',
       type: 'success',
@@ -436,129 +445,87 @@ router.post('/comment/add', async (req,res) => {
   }
 })
 
-// //获取某一篇文章下的所有评论
-router.get('/comment/get_all', async (req,res) => {
-  try {
-    let data = await (await Comment.find({article_id: req.query.article_id}).populate('user_id'))
-    let second_comment = await Reply.aggregate([
-      {
-        $match:{reply_type: '2'}
-      },
-      {
-        $lookup: {
-          from:"users",
-          localField:"from_user_id",
-          foreignField:"_id",
-          as:"from_user_info"  
-        }
-      },
-      {
-        $lookup: {
-          from:"users",
-          localField:"to_user_id",
-          foreignField:"_id",
-          as:"to_user_info"  
-        }
-      },
-      // {
-      //   $sort: {created_time : -1}
-      // },
-      {
-        $unwind: "$to_user_info"
-      },        
-      {
-        $unwind: "$from_user_info"
-      },
-      {
-        $project:{
-          "to_user_info.password" : 0,
-          "to_user_info.email" : 0,
-          "to_user_info.__v": 0,
-          "from_user_info.password" : 0,
-          "from_user_info.email" : 0,
-          "from_user_info.__v": 0,
-        }
-      },
-      {
-        $group: {
-          _id : "$reply_id",
-          second_comment: {$push: "$$ROOT"}
-        }
-      },
-    ])
-    let three_comment = await Reply.aggregate([
-      {
-        $match:{reply_type: '3'}
-      },
-      // {
-      //   $sort: {created_time : -1}
-      // },
-      {
-        $lookup: {
-          from:"users",
-          localField:"from_user_id",
-          foreignField:"_id",
-          as:"from_user_info"  
-        }
-      },
-      {
-        $lookup: {
-          from:"users",
-          localField:"to_user_id",
-          foreignField:"_id",
-          as:"to_user_info"  
-        }
-      },
-      {
-        $unwind: "$to_user_info"
-      },        
-      {
-        $unwind: "$from_user_info"
-      },
-      {
-        $project:{
-          "to_user_info.password" : 0,
-          "to_user_info.email" : 0,
-          "to_user_info.__v": 0,
-          "from_user_info.password" : 0,
-          "from_user_info.email" : 0,
-          "from_user_info.__v": 0,
-        }
-      },
-      {
-        $group: {
-          _id : "$reply_id",
-          three_comment: {$push: "$$ROOT"}
-        }
-      },
-    ])
-
-    for(let i=0; i<three_comment.length; i++){
-      let item = three_comment[i].three_comment
-      item.forEach(value => {
-        for(let j=0; j<three_comment.length; j++){
-          if(JSON.stringify(value._id) == JSON.stringify(three_comment[j].three_comment[0].reply_id)){
-            item.push(...three_comment[j].three_comment)
-          }
-        }
+//删除评论
+router.delete('/comment/delete', async (req, res) => {
+  try{
+    let delete_form = JSON.parse(req.query.delete_form)
+    let data = await Comment.deleteMany({_id: {$in: delete_form}})
+    await Article.findByIdAndUpdate(req.query.article_id, { $inc : { comment_num : -data.n} })
+    if(!data){
+      return res.status(200).json({
+        type: 'error',
+        message: '删除失败！',
       })
     }
+    res.status(200).json({
+      type: 'success',
+      message: '删除成功',
+      delete_count: data.deletedCount,
+    })
+  } catch( err ) {
+    return res.status(500).json({
+      type: 'error',
+      message: '服务端异常'
+    })
+  }
+})
 
-    second_comment.forEach(item => {
-      item.second_comment.forEach(item_child => {
-        three_comment.forEach(value => {
-          if(JSON.stringify(item_child._id) == JSON.stringify(value.three_comment[0].reply_id)){
-            item.second_comment.push(...value.three_comment)
+// //获取某一篇文章下的所有评论
+router.get('/comment/get_all', async (req,res) => {
+  let page_num = (req.query.page == 1 ? 0 : (req.query.page - 1) * 10)
+  try {
+    let total = await Comment.find( { article_id: req.query.article_id, comment_grade: '1'} ).count()
+    //所有评论/一级评论
+    let data = await Comment.find(
+      { article_id: req.query.article_id, comment_grade: '1'},
+      {to_user_id: 0, __v: 0} ).limit(10).skip(page_num).sort({created_time: req.query.sort_status})
+      .populate('from_user_id', {password: 0, __v: 0})
+
+    //二级评论
+    let comment_two = await Comment.aggregate([
+      { $match:{article_id: req.query.article_id, comment_grade: '2'} },
+      { $lookup: { from:"users", localField:"from_user_id", foreignField:"_id", as:"from_user_info" } },
+      { $lookup: { from:"users", localField:"to_user_id", foreignField:"_id", as:"to_user_info" } },       
+      { $unwind: {path: "$from_user_info", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$to_user_info", preserveNullAndEmptyArrays: true } },
+      { 
+        $project:{ "to_user_id": 0, "from_user_id": 0, "__v": 0, "to_user_info.password" : 0, "to_user_info.email" : 0, 
+                   "to_user_info.__v": 0, "from_user_info.password" : 0,"from_user_info.email" : 0, "from_user_info.__v": 0 } 
+      },
+      { $group: { _id : "$parent_id", equal: {$push: "$$ROOT"} } },
+      ])
+      
+    //三级评论
+    let comment_three = await Comment.aggregate([
+      { $match:{article_id: req.query.article_id, comment_grade: '3'} },
+      { $lookup: { from:"users", localField:"from_user_id", foreignField:"_id", as:"from_user_info" } },
+      { $lookup: { from:"users", localField:"to_user_id", foreignField:"_id", as:"to_user_info" } },       
+      { $unwind: {path: "$from_user_info", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$to_user_info", preserveNullAndEmptyArrays: true } },
+      { 
+        $project:{ "to_user_id": 0, "from_user_id": 0, "__v": 0, "to_user_info.password" : 0, "to_user_info.email" : 0, 
+                    "to_user_info.__v": 0, "from_user_info.password" : 0,"from_user_info.email" : 0, "from_user_info.__v": 0 } 
+      },
+      { $group: { _id : "$parent_id", equal: {$push: "$$ROOT"} } },
+      ])
+
+    //拼接
+    comment_two.forEach((item) => {
+      item.equal.forEach((item_child) => {
+        comment_three.forEach(value => {
+          if(item_child._id == value._id){
+            item_child.second_comment = value.equal
           }
         })
       })
     })
 
+    //拼接
     data.forEach((item,index) => {
-      second_comment.forEach(value => {
-        if(JSON.stringify(item._id) == JSON.stringify(value.second_comment[0].reply_id)){
+      comment_two.forEach(value => {
+        if(item._id == value._id){
           let item_copy = JSON.parse(JSON.stringify(item))
-          item_copy.second_comment = JSON.parse(JSON.stringify(value.second_comment))
+          item_copy.second_comment = JSON.parse(JSON.stringify(value.equal))
           data[index] = item_copy
         }
       })
@@ -568,56 +535,22 @@ router.get('/comment/get_all', async (req,res) => {
       message: 'OK',
       type: 'success',
       result: data,
+      total: total
     })
   } catch (err){
     return res.status(500).json({
       type: 'error',
-      message: '数据写入异常'
+      message: '服务端异常'
     })
   }
 })
 
-/********************************************************************************************************
- ******************************************  reply  *************************************************
-********************************************************************************************************/
-
-//添加回复
-router.post('/reply/add',(req,res) => {
-  let form = req.body;
-  let {reply_type,reply_id,content,from_user_id,to_user_id} = form
-  //2:回复——>评论 ; 3:回复——>回复
-  if(reply_type == 2 && (!reply_id || !content || !from_user_id || !to_user_id)){
-    return res.status(200).json({
-      type: 'error',
-      msg: '参数错误'
-    })
-  }else if(reply_type == 3 && (!reply_id || !content || !from_user_id || !to_user_id)){
-    return res.status(200).json({
-      type: 'error',
-      msg: '参数错误'
-    })
-  }else{
-    Reply(form).save((err,data) => {
-      if(err){
-        return res.status(500).json({
-          type: 'error',
-          message: '数据写入异常'+ err
-        })
-      }
-      res.status(200).json({
-        code: 200,
-        message: 'OK',
-        type: 'success',
-        result: data
-      })
-    })
-  }
-})
 
 
 /********************************************************************************************************
  ******************************************  like  *************************************************
 ********************************************************************************************************/
+
 //文章点赞
 router.post('/like/add_like_num', async (req, res) => {
   let status = req.body.status
