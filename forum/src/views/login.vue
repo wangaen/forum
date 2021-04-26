@@ -17,7 +17,7 @@
                       autocomplete="new-password"
                       placeholder="请输入密码" @keyup.enter.native="login"></el-input>
           </el-form-item>
-          <el-button class="login-btn" type="success" @click="login" :loading="btnLoading">登录</el-button>
+          <el-button class="login-btn" type="success" @click="login" :loading="btn_loading">登录</el-button>
         </el-form>
       </div>
       <div class="register">
@@ -39,28 +39,26 @@
           email: '',
           password: '',
         },
-        checked: 0,
         rules: {
           email: [
             {required: true, message: '请输入邮箱', trigger: 'blur'},
-            // { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
           ],
           password: [
             {required: true, message: '请输入密码', trigger: 'blur'},
-            // {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+            {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
           ]
         },
-        userMsg: {},
-        btnLoading: false,
+        btn_loading: false,
       }
     },
     methods: {
       login() {
         this.$refs.form.validate(async (valid) => {
           if (valid) {
-            this.btnLoading = true
+            this.btn_loading = true
             await this.$Api.loginApi(this.form).then(res => {
-              this.btnLoading = false
+              this.btn_loading = false
               if(res.message === 'OK'){
                 this.$store.commit('setUserData', res.result);
                 this.$router.push({path:'/',query: {id: res.result._id}})
@@ -69,7 +67,7 @@
                 this.$tools.diyTips(res.message,res.type)
               }
             }).catch(() => {
-              this.btnLoading = false
+              this.btn_loading = false
             })
           }
         })

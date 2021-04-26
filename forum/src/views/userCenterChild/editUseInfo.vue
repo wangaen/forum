@@ -93,7 +93,7 @@
         this.$emit('closeUserInfo')
       },
       saveUserInfo(){
-        this.$Api.editUserInfo(this.form).then(res => {
+        this.$Api.updateUserInfo(this.form).then(res => {
           if(res.message == 'OK'){
             this.$emit('saveUserInfo')
           }else{

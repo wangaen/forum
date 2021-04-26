@@ -15,23 +15,6 @@
 <script>
   export default {
     name : "bottomComponent" ,
-    props:{},
-
-    data(){
-      return {}
-    },
-
-    components:{},
-
-    created(){},
-
-    mounted(){},
-
-    computed:{},
-
-    methods:{},
-
-    watch:{},
   }
 </script>
 

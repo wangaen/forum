@@ -27,7 +27,7 @@
               @keyup.enter.native="register"
             ></el-input>
           </el-form-item>
-          <el-button class="register-btn" type="success" @click="register" :loading="btnLoading">注册</el-button>
+          <el-button class="register-btn" type="success" @click="register" :loading="btn_loading">注册</el-button>
         </el-form>
       </div>
       <div class="login">
@@ -50,7 +50,6 @@
           password: '',
           nickname: ''
         },
-        checked: 0,
         rules: {
           email: [
             { required: true, message: '请输入邮箱地址', trigger: 'blur' },
@@ -65,17 +64,16 @@
             {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
           ]
         },
-        userMsg: {},
-        btnLoading: false,
+        btn_loading: false,
       }
     },
     methods: {
       register() {
         this.$refs.form.validate( async (valid) => {
           if (valid) {
-            this.btnLoading = true
+            this.btn_loading = true
             await this.$Api.registerApi(this.form).then(res => {
-              this.btnLoading = false
+              this.btn_loading = false
               if(res.message === 'OK'){
                 this.$tools.diyTips('正在跳转登录界面','success',1400)
                 setTimeout(() => {
@@ -86,7 +84,7 @@
               }
             }).catch(() => {
               //异常关闭loading动画
-              return this.btnLoading = false
+              return this.btn_loading = false
             })
           }
         })

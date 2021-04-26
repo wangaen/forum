@@ -4,9 +4,9 @@
     <div class="avatar-box">
       <div class="img-box">
         <img :src="avatar" alt="">
-        <h3 style="margin-left: 50px;">{{userData.nickname}}</h3>
+        <h3 style="margin-left: 50px;">{{user_info.nickname}}</h3>
       </div>
-      <div class="up-img" @click="dialogTableVisible = true">
+      <div class="up-img" @click="dialog_table_visible = true">
         <img src="../assets/upload.png" alt="">
       </div>
     </div>
@@ -14,15 +14,15 @@
       <h3 style="margin-top:0px;">基本信息</h3>
       <div 
         class="base_info" 
-        @click="ifshowEditBox = false;" 
+        @click="if_show_edit_box = false;" 
       >
-        <div class="edit-main" v-if="ifshowEditBox">
+        <div class="edit-main" v-if="if_show_edit_box">
           <div class="editText">
             <div>
               <span>邮</span>
               <span>箱</span>
             </div>
-            <div style="width: 250px;">{{userData.email}}</div>
+            <div style="width: 250px;">{{user_info.email}}</div>
             <div>
               <div class="edit">
                 <i class="el-icon-edit" style="margin-right:2px;"></i>
@@ -32,11 +32,11 @@
           </div>
           <div>
             <div>用户昵称</div>
-            <div>{{userData.nickname}}</div>
+            <div>{{user_info.nickname}}</div>
           </div>
           <div>
             <div>真实姓名</div> 
-            <div v-if="userData.realname">{{userData.realname}}</div> 
+            <div v-if="user_info.realname">{{user_info.realname}}</div> 
             <div v-else style="color:#ccc;">未填写</div>
           </div>
           <div>
@@ -44,7 +44,7 @@
               <span>地</span>
               <span>址</span>
             </div> 
-            <div v-if="userData.location">{{userData.location}}</div>
+            <div v-if="user_info.location">{{user_info.location}}</div>
             <div v-else style="color:#ccc;">未填写</div>
           </div>
           <div>
@@ -52,25 +52,25 @@
               <span>性</span>
               <span>别</span>
             </div> 
-            <div v-if="userData.gender === '-1'" style="color:#ccc;">未设置</div>
-            <div v-else>{{userData.gender === '0' ? '女' : '男'}}</div>
+            <div v-if="user_info.gender === '-1'" style="color:#ccc;">未设置</div>
+            <div v-else>{{user_info.gender === '0' ? '女' : '男'}}</div>
           </div>
           <div>
             <div>出生日期</div> 
-            <div v-if="!userData.birthday" style="color:#ccc;">未设置</div>
-            <div v-else>{{userData.birthday}}</div>
+            <div v-if="!user_info.birthday" style="color:#ccc;">未设置</div>
+            <div v-else>{{user_info.birthday}}</div>
           </div>
           <div>
             <div>个人简介</div> 
-            <div v-if="!userData.experience" style="color:#ccc;">未填写</div>
-            <div v-else class="text-box">{{userData.experience}}</div>
+            <div v-if="!user_info.experience" style="color:#ccc;">未填写</div>
+            <div v-else class="text-box">{{user_info.experience}}</div>
           </div>
         </div>
-        <editUserInfo v-else @saveUserInfo="saveUserInfo" @closeUserInfo="closeUserInfo" :userData="userData"/>
+        <editUserInfo v-else @saveUserInfo="saveUserInfo" @closeUserInfo="closeUserInfo" :user_info="user_info"/>
       </div>
     </div>
 
-    <upload-img v-if="dialogTableVisible" @closeUploadImg="closeUploadImg" @updateImg="updateImg"/>
+    <upload-img v-if="dialog_table_visible" @closeUploadImg="closeUploadImg" @updateImg="updateImg"/>
   </div>
 </div>
 </template>
@@ -83,10 +83,9 @@ import editUserInfo from './userCenterChild/editUseInfo';
 
     data(){
       return {
-        userData: '',
-        ifshowEditBG:false,
-        dialogTableVisible:false,
-        ifshowEditBox: true,
+        user_info: '',
+        dialog_table_visible:false,
+        if_show_edit_box: true,
         avatar: '',
       }
     },
@@ -104,23 +103,23 @@ import editUserInfo from './userCenterChild/editUseInfo';
     methods:{
       saveUserInfo(){
         //  修改成功，关闭编辑框
-        this.ifshowEditBox = true
+        this.if_show_edit_box = true
         this.getData()
       },
       closeUserInfo(){
-        this.ifshowEditBox = true
+        this.if_show_edit_box = true
       },
       async getData(){
         await this.$Api.getUserInfo({id : this.$route.query.id}).then(res => {
           if(res.message == 'OK'){
-            this.userData = res.result
-            this.avatar = this.userData.avatar
+            this.user_info = res.result
+            this.avatar = this.user_info.avatar
             this.$store.commit('setUserData',res.result)
           }
         })
       },
       closeUploadImg(value){
-        this.dialogTableVisible = value      
+        this.dialog_table_visible = value      
       },
       updateImg(){
         this.getData()

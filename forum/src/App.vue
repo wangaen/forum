@@ -1,6 +1,6 @@
 <template>
-  <div id="app" :class="{'app-padding-top': !appPaddingTop}">
-    <navbar class="navbar-box" v-if="!appPaddingTop"></navbar>
+  <div id="app" :class="{'app-padding-top': !app_padding_top}">
+    <navbar class="navbar-box" v-if="!app_padding_top"></navbar>
     <router-view/>
     <bottomComponent v-show="$route.path === '/'" class="bottom"></bottomComponent>
   </div>
@@ -17,15 +17,15 @@ import bottomComponent from './components/footer/bottomComponent'
     },
     data(){
       return{
-        appPaddingTop: this.$route.path === '/login' || this.$route.path === '/register', 
+        app_padding_top: this.$route.path === '/login' || this.$route.path === '/register', 
       }
     },
     watch: {
-      '$route.path': function (newVal) {
-        if (newVal === '/login' || newVal === '/register' || newVal === '/not_found') {
-          this.appPaddingTop = true
+      '$route.path': function (val) {
+        if (val === '/login' || val === '/register' || val === '/not_found') {
+          this.app_padding_top = true
         }else{
-          this.appPaddingTop = false
+          this.app_padding_top = false
         }
       },
     }

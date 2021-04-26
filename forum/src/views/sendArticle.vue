@@ -83,7 +83,7 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            if( this.form.article_img ){
+            if( this.form.article_img && !this.send_or_update){
               this.$Api.deleteImg({url: this.form.article_img}).then(() => {})
             }
             next()

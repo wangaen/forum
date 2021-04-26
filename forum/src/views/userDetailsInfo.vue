@@ -156,7 +156,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$Api.articleDelete({id}).then(res => {
+          this.$Api.articleDelete({ id }).then(res => {
             this.$tools.diyTips(res.message, res.type)
             this.totalReticleReadLikeApi()
             this.getUserAllArticles()

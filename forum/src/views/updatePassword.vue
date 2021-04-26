@@ -33,12 +33,6 @@
         }
       }
     },
-    created(){},
-
-    mounted(){},
-
-    computed:{},
-
     methods:{
      async updatePass(){
         if(this.form.newpass && this.form.oldpass && this.form.okpass){
@@ -62,8 +56,6 @@
         }
       }
     },
-
-    watch:{},
   }
 </script>
 

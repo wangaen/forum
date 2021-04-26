@@ -8,10 +8,10 @@ let app = express()
 // 路由请求超时的中间件
 app.use((req, res, next) => {
   req.setTimeout(20000, () => {
-      return res.status(408).json({
-        type: 'error',
-        message: "请求超时,请重新再试"
-      })
+    return res.status(408).json({
+      type: 'error',
+      message: "请求超时,请重新再试"
+    })
   });
   res.setTimeout(20000, () => {
     return res.status(408).json({
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 })
 
 //解决跨域
-app.all('*',function (req, res, next) {
+app.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With');
   res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
@@ -46,6 +46,6 @@ app.use(bodyParser.json())
 
 app.use(router)
 
-app.listen(3000,() => {
+app.listen(3000, () => {
   console.log('服务器已启动......');
 })

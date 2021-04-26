@@ -4,7 +4,7 @@
       <div class="article-box">
         <!-- 标题-->
         <div class="title">
-          <p>{{articleData.title}}</p>
+          <p>{{article_data.title}}</p>
         </div>
         <!-- 头像用户名简介 -->
         <div class="avatar">
@@ -16,20 +16,20 @@
             <p>{{user_info.experience}}</p>
           </div>
           <div>
-            <div><i class="el-icon-date">{{timeToDate(articleData.created_time)}}</i></div>
+            <div><i class="el-icon-date">{{timeToDate(article_data.created_time)}}</i></div>
             <div>
-              <span @click="goLike" :class="{like_color: like_form.status}"><i class="el-icon-thumb">{{articleData.like_num}}</i></span>
+              <span @click="goLike" :class="{like_color: like_form.status}"><i class="el-icon-thumb">{{article_data.like_num}}</i></span>
               <span><a href="#comment"><i class="el-icon-chat-dot-round">{{comment_num}}</i></a></span>
             </div>
           </div>
         </div>
         <!-- 图片 -->
-        <div class="articleimg" v-if="articleData.article_img">
-          <img :src="articleData.article_img" alt="">
+        <div class="articleimg" v-if="article_data.article_img">
+          <img :src="article_data.article_img" alt="">
         </div>
         <!-- 内容-->
         <div class="content">
-          <p>{{articleData.content}}</p>
+          <p>{{article_data.content}}</p>
         </div>
       </div>
       <div class="comment-main" id="comment">
@@ -64,8 +64,7 @@ import getComment from './getComment'
     components:{getComment},
     data(){
       return {
-        articleData: {},
-        show_like_color: false,
+        article_data: {},
         comment_num: 0,
         user_info: {},
         total_reticle_read_like: [],
@@ -78,7 +77,6 @@ import getComment from './getComment'
         }
       }
     },
-
     async created(){
       //判断是否点赞
       await this.$Api.ifLikeArticle(this.like_form).then(res => this.like_form.status = res.status)
@@ -90,9 +88,9 @@ import getComment from './getComment'
     },
     methods:{
       async getData(){
-        await this.$Api.getArticleInfo({id: this.$route.params.id}).then(res => {
+        await this.$Api.getOneArticleInfo({id: this.$route.params.id}).then(res => {
           if(res.message == 'OK') {
-            this.articleData = res.result;
+            this.article_data = res.result;
             this.comment_num = res.result.comment_num
             this.user_info = res.result.user_id
           }
@@ -111,11 +109,11 @@ import getComment from './getComment'
           this.$Api.addLikeNum(this.like_form).then(res => {
             if(res.result == '点赞成功'){
               this.like_form.status = true;
-              this.articleData.like_num = this.articleData.like_num + 1
+              this.article_data.like_num = this.article_data.like_num + 1
               this.totalReticleReadLikeApi()
             }else{
               this.like_form.status = false;
-              this.articleData.like_num = this.articleData.like_num - 1
+              this.article_data.like_num = this.article_data.like_num - 1
               this.totalReticleReadLikeApi()
             }
           })
@@ -141,8 +139,6 @@ import getComment from './getComment'
           return this.$tools.timeToDate(time)
         }
       }
-    },
-    watch:{
     },
   }
 </script>

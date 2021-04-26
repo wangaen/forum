@@ -34,14 +34,9 @@
         show: false,
       }
     },
-
     created(){
       this.getData()
     },
-
-    mounted(){
-    },
-
     computed:{
       getUpdateAvatarStatu(){
         return this.$store.getters.getUpdateAvatarStatu

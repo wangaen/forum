@@ -19,20 +19,6 @@
         default: '80px'
       }
     },
-
-    data(){
-      return {}
-    },
-
-    components:{
-    },
-
-    created(){},
-
-    mounted(){},
-
-    computed:{},
-
     methods:{
       goHome(index){
         if(index === 0){
@@ -50,8 +36,8 @@
     },
 
     watch:{
-      '$route.path': function (newVal) {
-        if (newVal) {
+      '$route.path': function (val) {
+        if (val) {
           this.$emit('cancelSearch')
         }
       },

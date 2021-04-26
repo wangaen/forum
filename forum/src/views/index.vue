@@ -2,7 +2,7 @@
   <div class="index">
     <div class="index-main">
       <template>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table :data="table_data" style="width: 100%">
           <el-backtop :right="40" :bottom="60" :visibility-height="2000"></el-backtop> 
           <el-table-column width="800px">
             <template slot-scope="scope">
@@ -49,14 +49,13 @@
 </template>
 
 <script>
-import axios from 'axios'
   export default {
     name : "index" ,
     props:{},
 
     data(){
       return {
-        tableData: [],
+        table_data: [],
         total: 10,
         now_page: 1,
         form:{
@@ -86,7 +85,7 @@ import axios from 'axios'
       async getData(){
         await this.$Api.getArticle(this.form).then(res => {
           if(res.message === 'OK'){
-            this.tableData = res.result
+            this.table_data = res.result
             this.total = res.total
             //点击下一页时跳转到顶部
             document.documentElement.scrollTop = 0;

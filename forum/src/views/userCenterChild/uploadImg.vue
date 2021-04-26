@@ -72,7 +72,6 @@
             "Content-Type": "multipart/form-data",
           },
         };
-
        await this.$Api.uploadAvatarImgApi(this.filedata, config).then((res) => {
           this.$tools.diyTips(res.message, res.type)
           this.closeClick()

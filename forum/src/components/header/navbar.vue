@@ -9,15 +9,15 @@
       </el-form>
       <navbarLabel @cancelSearch="cancelSearch"></navbarLabel>
     </div>
-    <div class="btn-main" v-if="!ifShow">
+    <div class="btn-main" v-if="!if_show">
       <el-button type="primary" @click="$router.push('/register')">注册</el-button>
       <el-button type="success" @click="$router.push('/login')">登录</el-button>
     </div>
-    <div class="my-box" v-if="ifShow">
-      <img :src="avatarUrl" alt="" @mouseenter="ifShowAvatar = false" v-show="ifShowAvatar">
+    <div class="my-box" v-if="if_show">
+      <img :src="avatar_url" alt="" @mouseenter="if_show_avatar = false" v-show="if_show_avatar">
       <el-button type="danger" @click="send_btn" :class="{'opacitySend' : $route.path == '/send_article'}">发布</el-button>
     </div>
-    <div @mouseenter="ifShowAvatar = false" @mouseleave="ifShowAvatar = true" v-show="!ifShowAvatar"  class="avatar-hover">
+    <div @mouseenter="if_show_avatar = false" @mouseleave="if_show_avatar = true" v-show="!if_show_avatar"  class="avatar-hover">
       <avatarHover @getShowAvatar="getShowAvatar"></avatarHover>
     </div>
   </div>
@@ -31,9 +31,9 @@ import avatarHover from '../avatarHover/avatarHover'
     data(){
       return {
         search: '',
-        ifShow: false,
-        ifShowAvatar: true,
-        avatarUrl: '',
+        if_show: false,
+        if_show_avatar: true,
+        avatar_url: '',
         //当前是否正在进行模糊查询
         now_search: false
       }
@@ -60,8 +60,8 @@ import avatarHover from '../avatarHover/avatarHover'
         if(id){
           await this.$Api.getUserInfo({id}).then(res => {
             if(res.message == 'OK'){
-              this.ifShow = true;
-              this.avatarUrl = this.$store.getters.getUserAvatar;
+              this.if_show = true;
+              this.avatar_url = this.$store.getters.getUserAvatar;
             }else{
               this.$router.push('/')
               window.localStorage.setItem('kuajingtongstatu','nologin')
@@ -77,7 +77,7 @@ import avatarHover from '../avatarHover/avatarHover'
         this.$router.push({path:'/send_article', query:{id: this.$store.getters.getUserID}})
       },
       getShowAvatar(value){
-        this.ifShowAvatar = value
+        this.if_show_avatar = value
       },
       //模糊查询文章
       searchArticles(){

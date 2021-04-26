@@ -1,7 +1,7 @@
 <template>
   <div class="comment-box">
     <!-- 评论输入款 -->
-    <div class="my-box" v-if="ifLogin">
+    <div class="my-box" v-if="if_login">
       <div class="avatar-input">
         <img :src="$store.getters.getUserAvatar" alt="">
         <el-input
@@ -13,7 +13,7 @@
           v-model="comment_article">
         </el-input>
       </div>
-      <div class="btn-box" v-show="showBtn">
+      <div class="btn-box" v-show="show_btn">
         <el-button type="primary" round @click="cancelComment">取 消 评 论</el-button>
         <el-button type="primary" round @click="sendComment">发 表 评 论</el-button>
       </div>
@@ -69,7 +69,7 @@
                 <span >{{getTime(value.created_time)}}</span>
               </div>
               <!-- 回复输入框 回复别人的回复-->
-              <div class="my-box reply-box" v-if="showChildComment == value._id">
+              <div class="my-box reply-box" v-if="show_child_comment == value._id">
                 <div class="avatar-input">
                   <img :src="$store.getters.getUserAvatar" alt="">
                   <el-input
@@ -112,7 +112,7 @@
                     <span >{{getTime(value_child.created_time)}}</span>
                   </div>
                   <!-- 回复输入框 回复别人的回复-->
-                  <div class="my-box reply-box three_left_margin" v-if="showChildComment == value_child._id">
+                  <div class="my-box reply-box three_left_margin" v-if="show_child_comment == value_child._id">
                     <div class="avatar-input">
                       <img :src="$store.getters.getUserAvatar" alt="">
                       <el-input
@@ -134,7 +134,7 @@
           </div>
         </div>
       </div>
-      <div v-if="!all_comment_data.length && !ifLogin" style="color:#999AAA; margin-bottom:10px;">
+      <div v-if="!all_comment_data.length && !if_login" style="color:#999AAA; margin-bottom:10px;">
        此文章暂无评论
       </div>
       <div class="page-box">
@@ -150,14 +150,13 @@
     data(){
       return {
         show_one_comment: -1, //确定回复输入框的插入位置
-        showBtn: false, //显示评论输入框
-        showChildComment: '',
+        show_btn: false, //显示评论输入框
+        show_child_comment: '',
         comment_article: '',
         total: 10,
         now_page: 1,
         is_my: this.$store.getters.getUserID,
         all_comment_data: [],
-
         comment_form:{
           article_id: this.$route.params.id,
           content: '',
@@ -171,13 +170,13 @@
           sort_status: -1,
           page: 1
         },
-        ifLogin: false,
+        if_login: false,
       }
     },
 
     async created(){
-      this.ifLogin = await this.$tools.isLogin(this.$store.getters.getUserID)
-      this.getData()
+      this.if_login = await this.$tools.isLogin(this.$store.getters.getUserID)
+      await this.getData()
     },
 
     mounted(){},
@@ -188,8 +187,6 @@
           if(res.message === 'OK'){
             this.all_comment_data = res.result
             this.total = res.total
-            // //点击下一页时跳转到顶部
-            // document.documentElement.scrollTop = 0;
           }else{
             this.$tools.diyTips('网络异常，请稍后再试','error')
           }
@@ -202,7 +199,7 @@
       },
       //点击回复————回复一级评论
       async goReplyOneComment(index,user_info){
-        if( await this.ifLogin){
+        if( await this.if_login){
           //清除评论文章的内容
           this.comment_article = ''
           //清除评论内容
@@ -214,35 +211,35 @@
           //评论类型
           this.comment_form.comment_grade = '2'
           //关闭评论输入框
-          this.showBtn = false;
+          this.show_btn = false;
           //对应位置插入回复框
           this.show_one_comment = index;
-          this.showChildComment = ''
+          this.show_child_comment = ''
         }else{
           this.$tools.diyTips('您还未登录，请登录后再试！！！', 'error',5000)
         }
       },
       //点击评论文章输入框
       async commentInputFocus(){
-        if(await this.ifLogin){
+        if(await this.if_login){
           this.comment_form.content = '';
           this.show_one_comment = -1;
-          this.showBtn = true;
-          this.showChildComment = ''
+          this.show_btn = true;
+          this.show_child_comment = ''
         }else{
           this.$tools.diyTips('您还未登录，请登录后再试！！！', 'error',5000)
         }
       },
       //取消评论
       cancelComment(){
-        this.showBtn = false;
+        this.show_btn = false;
         this.comment_article = ''
       },
       //取消回复
       cancelReplyOneComment(){
         this.comment_form.content = '';
         this.show_one_comment = -1;
-        this.showChildComment = ''
+        this.show_child_comment = ''
       },
       //添加评论
       sendComment(){
@@ -254,7 +251,7 @@
             this.getData()
             this.comment_form.content = ''
             this.comment_article = ''
-            this.showBtn = false
+            this.show_btn = false
             //更新评论个数，不请求接口，图片不在加载，减少服务器压力
             this.$emit('commentNumAdd', 1)
             this.$tools.diyTips('评论成功',res.type)
@@ -269,7 +266,7 @@
             this.$tools.diyTips('回复成功','success')
             //更新评论个数，不请求接口，图片不在加载，减少服务器压力
             this.$emit('commentNumAdd', 1)
-            this.showChildComment = ''
+            this.show_child_comment = ''
             this.show_one_comment = -1
             this.comment_form.content = ''
             this.getData()
@@ -316,11 +313,11 @@
         }).catch((err) => {console.log(err)});
       },
       async goSecondReply(_id, value_child_id, user_info){
-        if(await this.ifLogin){
+        if(await this.if_login){
           if(value_child_id){
-            this.showChildComment = value_child_id
+            this.show_child_comment = value_child_id
           }else{
-            this.showChildComment = _id
+            this.show_child_comment = _id
           }
           //评论id
           this.comment_form.parent_id = _id
@@ -329,7 +326,7 @@
           //评论类型
           this.comment_form.comment_grade = '3'
           //关闭评论输入框
-          this.showBtn = false;
+          this.show_btn = false;
           //清除评论内容
           this.comment_form.content = '';
           //对应位置插入回复框
