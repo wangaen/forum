@@ -108,6 +108,7 @@
         this.form.page = currentpage
         this.getData()
       },
+      //前往文章详情页
       goArticle(id){
         this.$router.push(`/article/details/${id}`)
         this.$Api.addReadNumApi({id}).then(() => {})
