@@ -53,7 +53,7 @@
   export default {
     name : "editUserInfo" ,
     props:{
-      userData:{
+      user_info:{
         type: Object,
         default: () =>{
           return {}
@@ -82,9 +82,9 @@
       }
     },
     created(){
-      let userData =  this.userData
+      let user_info =  this.user_info
       for(let value in this.form){
-        this.form[value] = userData[value]
+        this.form[value] = user_info[value]
       }
     },
     methods:{

@@ -7,10 +7,10 @@
           <el-table-column width="800px">
             <template slot-scope="scope">
               <div class="tb-t-top" @click="goArticle(scope.row._id)">
-                <span>{{scope.row.title}}</span>
+                <span v-html="scope.row.title"></span>
               </div>
               <div class="tb-t-center">
-                <p>{{scope.row.content}}</p>
+                <p v-html="scope.row.content"></p>
               </div>
               <div class="tb-t-bottom">
                 <div>
@@ -86,11 +86,22 @@
         await this.$Api.getArticle(this.form).then(res => {
           if(res.message === 'OK'){
             this.table_data = res.result
+            this.highLight(this.table_data)
             this.total = res.total
             //点击下一页时跳转到顶部
             document.documentElement.scrollTop = 0;
           }
         })
+      },
+      //搜索关键词高亮
+      highLight(table_data) {
+        const search = this.form.search
+        if(search && table_data.length) {
+          table_data.forEach(item => {
+            item.title = item.title.replace(search, `<em style="color: #fc5531; font-style: normal;"> ${search} </em>`)
+            item.content = item.content.replace(search, `<em style="color: #fc5531; font-style: normal;">${search}</em>`)
+          });
+        }
       },
       //点击某一页时，currentpage为页码
       currentChange(currentpage){
@@ -164,15 +175,15 @@
         }
       }
       .tb-t-center{
-        padding: 0px 0px 20px 0px;
+        margin-bottom: 20px;
         word-break: break-all;
         text-overflow: ellipsis;
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         font-size: 14px;
-        height: 78px;
+        height: 55px;
         color: #999;
 
         p{

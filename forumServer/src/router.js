@@ -42,7 +42,8 @@ router.post('/register', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -67,7 +68,8 @@ router.post('/login', async (req, res) => {
     // 查找不到
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -108,7 +110,8 @@ router.put('/user/update_info', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -134,7 +137,8 @@ router.put('/user/update_password', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -160,7 +164,8 @@ router.get('/user/get_info', async (req, res) => {
     // 出现异常
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -211,6 +216,7 @@ router.post('/user/avatar/upload', upload.single('avatar'), async (req, res) => 
     return res.status(500).json({
       type: 'error',
       message: '服务端异常',
+      err: err.message,
     })
   }
 })
@@ -228,6 +234,10 @@ router.get('/article/get_page_data', async (req, res) => {
     let all_data_count = await Article.find().count()
     let data = await Article.find(search).sort({ created_time: -1 }).limit(20).skip(page_num)
       .populate('user_id', { password: 0, __V: 0 })
+    
+    // 对文章的内容截取
+    data.forEach(item => item.content = item.content.slice(0,130))
+
     res.status(200).json({
       type: 'success',
       message: 'OK',
@@ -237,7 +247,8 @@ router.get('/article/get_page_data', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -249,6 +260,8 @@ router.get('/article/user_all_articles', async (req, res) => {
   let page_num = (page == 1 ? 0 : (page - 1) * 10)
   try {
     let data = await Article.find({ user_id }).sort(sort_label).limit(10).skip(page_num)
+    // 对文章的内容截取
+    data.forEach(item => item.content = item.content.slice(0,120))
     res.status(200).json({
       type: 'success',
       message: 'OK',
@@ -257,7 +270,8 @@ router.get('/article/user_all_articles', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -289,7 +303,8 @@ router.get('/article/total_reticle_read_like', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -307,7 +322,8 @@ router.get('/article/get_one_article_info', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -334,9 +350,9 @@ router.post('/article/send', async (req, res) => {
     })
   } catch (err) {
     return res.status(500).json({
-      code: 500,
       type: 'error',
-      message: '数据写入异常'
+      message: '数据写入异常',
+      err: err.message
     })
   }
 })
@@ -352,7 +368,8 @@ router.post('/article/add_read_num', async (req, res) => {
   } catch (err) {
     res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -374,7 +391,8 @@ router.put('/article/update', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -396,7 +414,8 @@ router.delete('/article/delete', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -419,7 +438,8 @@ router.post('/comment/add', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '数据写入异常'
+      message: '数据写入异常',
+      err: err.message
     })
   }
 })
@@ -444,7 +464,8 @@ router.delete('/comment/delete', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -523,7 +544,8 @@ router.get('/comment/get_all', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '服务端异常'
+      message: '服务端异常',
+      err: err.message
     })
   }
 })
@@ -563,7 +585,8 @@ router.post('/like/add_like_num', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '数据写入异常'
+      message: '数据写入异常',
+      err: err.message
     })
   }
 })
@@ -580,7 +603,8 @@ router.get('/like/if_like_article', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       type: 'error',
-      message: '数据写入异常'
+      message: '数据写入异常',
+      err: err.message
     })
   }
 })
