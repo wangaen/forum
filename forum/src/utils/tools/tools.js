@@ -1,5 +1,5 @@
 import {MessageBox, Message} from 'element-ui'
-import api from '../api/api';
+import api from '@/api/api';
 /**
  * 获取图片的base64格式
  * @param {Object} file file.raw 
@@ -31,7 +31,7 @@ function getBase64(file){
  * @param {String} type //提示类型
  * @param {Number} time //展示时间
  */
-function diyTips(str,type,time){
+export function diyTips(str,type,time){
   Message({
     message: str,
     type: type,
@@ -91,7 +91,7 @@ function getDate(dateTimeStamp){
 
 function timeToDate(dateTimeStamp){
   if(dateTimeStamp==undefined){
-    return false;
+    return '';
   } else {
     let date = new Date(dateTimeStamp) 
     //dateTimeStamp 的 时间戳
@@ -128,19 +128,17 @@ async function isLogin(id) {
   //不存在nologin的情况
   if(status){
     return false
-  }
-
-  if(!status){
-    await api.getUserInfo({id}).then(res => {
-      if(res.message == 'OK'){
-        status = true
-      }else{
-        status = false
-      }
-    })
-  }
-  return status
+  } else {
+    await api.getUserInfo({id})
+      .then(() => {
+        return true
+      })
+      .catch(() => {
+        return false
+      })
+    }
 }
+
 export default {
   getBase64,
   diyTips,

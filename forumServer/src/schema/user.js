@@ -18,7 +18,7 @@ var userSchema = new Schema({
     type: String,
     // 删除左右两边的空格
     trim: true,
-    required: true
+    default: ''
   },
   //用户名
   nickname: {
@@ -75,12 +75,12 @@ var userSchema = new Schema({
     default: '0'
   },
   //创建时间
-  created_time: {
+  createdTime: {
     type: Date,
     default: Date.now
   },
   //最后更新时间
-  last_modified_time: {
+  lastModifiedTime: {
     type: Date,
     default: Date.now
   },

@@ -18,42 +18,48 @@ var articleSchema = new Schema({
     type: String,
     required: true
   },
-  //内容
-  content: {
+  //展示部分内容
+  contentText: {
+    type: String,
+    required: true
+  },
+  //详情全部内容
+  contentHtml: {
     type: String,
     required: true
   },
   //用户id
-  user_id:{
+  userId:{
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
   //创建时间
-  created_time: {
+  createdTime: {
     type: Date,
     default: Date.now
   },
   //最后更新时间
-  last_up_time: {
+  lastUpTime: {
     type: Date,
     default: Date.now
   },
   //封面图片
-  article_img: {
+  articleImg: {
     type: String,
     default: ''
   },
   //点赞
-  like_num:{
+  likeNum:{
     type: Number,
     default: 0
   },
   //阅读数
-  read_num:{
+  readNum:{
     type: Number,
     default: 1
   },
-  comment_num:{
+  //评论数
+  commentNum:{
     type: Number,
     default: 0,
   }

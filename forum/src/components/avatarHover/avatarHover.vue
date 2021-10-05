@@ -54,7 +54,7 @@
           if(index == 1){
             this.$emit('getShowAvatar',true)
             this.$router.push({
-              path:'/user_center',query:{id: this.userId}
+              path:'/user/center',query:{id: this.userId}
             },() => {})
           }else if(index == 2){
             this.$emit('getShowAvatar',true)
@@ -64,7 +64,7 @@
           }else if(index == 3){
             this.$emit('getShowAvatar',true)
             this.$router.push({
-              path:'/update_password'
+              path:'/user/update_password'
             }, () => {})
           }else if(index == 4){
             this.$emit('getShowAvatar',true)

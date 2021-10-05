@@ -14,7 +14,7 @@ var Schema = mongoose.Schema
 
 var commentSchema = new Schema({
   //文章id
-  article_id:{
+  articleId:{
     type: String,
     required: true
   },
@@ -24,33 +24,33 @@ var commentSchema = new Schema({
     required: true
   },
   //评论级别
-  comment_grade: {
+  commentGrade: {
     type: String,
     enum: ['1', '2', '3'],
     default: '1'
   },
   //父级id
-  parent_id: {
+  parentId: {
     type: String,
     default: ''
   },
   //评论人id
-  from_user_id:{
+  fromUserId:{
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
   //被评论人id
-  to_user_id:{
+  toUserId:{
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
   //创建时间
-  created_time: {
+  createdTime: {
     type: Date,
     default: Date.now
   },
   //最后更新时间
-  last_up_time: {
+  lastUpTime: {
     type: Date,
     default: Date.now
   },

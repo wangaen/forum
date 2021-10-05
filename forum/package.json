@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "serve": "cross-env NODE_ENV=development vue-cli-service serve --open",
+    "build": "cross-env NODE_ENV=production vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -13,13 +13,15 @@
     "style-loader": "^2.0.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "wangeditor": "^4.7.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "cross-env": "^7.0.3",
     "less": "^4.1.1",
     "less-loader": "^7.3.0",
     "vue-template-compiler": "^2.6.11"

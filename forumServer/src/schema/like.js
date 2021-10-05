@@ -13,23 +13,23 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let likeSchema = new Schema({
-  user_id:{
+  userId:{
     type: Schema.Types.ObjectId,
     ref: 'User',
     require: true,
   },
-  article_id:{
+  articleId:{
     type: Schema.Types.ObjectId,
     ref: 'Article',
     require: true,
   },
   //创建时间
-  created_time: {
+  createdTime: {
     type: Date,
     default: Date.now
   },
   //最后更新时间
-  last_up_time: {
+  lastUpTime: {
     type: Date,
     default: Date.now
   },

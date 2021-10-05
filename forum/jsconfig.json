@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6", //指定要使用的默认库
+    "allowSyntheticDefaultImports": true, //允许从没有默认导出的模块进行默认导入。 这不会影响代码发出，只会影响类型检查。
+    "baseUrl": "./", //用于解析非相对模块名称的基目录。
+    "paths": {
+      //指定相对于baseUrl选项计算的路径映射
+      "@/*": ["src/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

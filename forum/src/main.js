@@ -8,7 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import tools from './utils/tools/tools'
 
-import api from './utils/api/api.js';
+import api from '@/api/api';
 
 Vue.prototype.$Api = api
 Vue.prototype.$tools = tools

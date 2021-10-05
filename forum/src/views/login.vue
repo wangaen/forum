@@ -1,177 +1,127 @@
 <template>
-  <div class="login">
-    <div class="login-box">
-      <img src="../assets/logo.png" alt="">
+  <bg>
+    <template v-slot:formWrap>
       <div class="tips">
         <p>欢迎登录</p>
         <p>外贸通</p>
       </div>
-      <div class="form-box">
-        <el-form class="login-form" ref="form" :model="form" :rules="rules" label-width="0" label-position="left">
-          <el-form-item prop="email">
-            <el-input prefix-icon="el-icon-s-custom" class="info" v-model="form.email" autocomplete="new-password"
-                      placeholder="请输入邮箱"></el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input type="password" prefix-icon="el-icon-unlock" class="info" v-model="form.password"
-                      autocomplete="new-password"
-                      placeholder="请输入密码" @keyup.enter.native="login"></el-input>
-          </el-form-item>
-          <el-button class="login-btn" type="success" @click="login" :loading="btn_loading">登录</el-button>
-        </el-form>
-      </div>
-      <div class="register">
-        没有账号?
-        <a href="javascript:;" style="text-decoration:none;margin-left:10px;" @click="$router.push('/register')">
-          点击注册
-        </a>
-      </div>
-    </div>
-  </div>
+      <el-form class="form-box" ref="ruleForm" :model="ruleForm" :rules="loginRule" label-width="0" label-position="left">
+        <el-form-item prop="nickname">
+          <el-input prefix-icon="el-icon-s-custom" class="info" v-model="ruleForm.nickname" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input type="password" prefix-icon="el-icon-unlock" class="info" v-model="ruleForm.password" placeholder="请输入密码" @keyup.enter.native="login"></el-input>
+        </el-form-item>
+        <el-button class="confirm-btn" type="success" @click="login">登录</el-button>
+      </el-form>
+    </template>
+  </bg>
 </template>
 
 <script>
-  export default {
-    name: "login",
-    data() {
-      return {
-        form: {
-          email: '',
-          password: '',
-        },
-        rules: {
-          email: [
-            {required: true, message: '请输入邮箱', trigger: 'blur'},
-            // { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-          ],
-          password: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            // {min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
-          ]
-        },
-        btn_loading: false,
-      }
+import { loginRule } from "@/utils/rules";
+import { loginApi } from "@/api/api";
+import bg from "@/components/common/bg.vue";
+export default {
+  name: "login",
+  components: { bg },
+  data() {
+    return {
+      ruleForm: {
+        nickname: "",
+        password: "",
+      },
+      loginRule: loginRule,
+    };
+  },
+  methods: {
+    login() {
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (valid) {
+          let res = await loginApi(this.ruleForm);
+          if (!res) return;
+          const loading = this.$loading({
+            lock: true,
+            text: "正在加载中......",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+          });
+          this.$store.commit("setToken", res.token);
+          localStorage.setItem("id", JSON.stringify(res.data._id));
+          new Promise((resolve) => {
+            return setTimeout(() => {
+              resolve(loading.close());
+            }, 300);
+          }).then(() => {
+            this.$router.push("/");
+          });
+        }
+      });
     },
-    methods: {
-      login() {
-        this.$refs.form.validate(async (valid) => {
-          if (valid) {
-            this.btn_loading = true
-            await this.$Api.loginApi(this.form).then(res => {
-              this.btn_loading = false
-              if(res.message === 'OK'){
-                this.$store.commit('setUserData', res.result);
-                this.$router.push({path:'/',query: {id: res.result._id}})
-                window.localStorage.getItem('kuajingtongstatu') && window.localStorage.removeItem('kuajingtongstatu')
-              }else{
-                this.$tools.diyTips(res.message,res.type)
-              }
-            }).catch(() => {
-              this.btn_loading = false
-            })
-          }
-        })
-      }
-    }
-  }
+  },
+};
 </script>
 
 <style scoped lang="less">
-  .login {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #1C202C;
+.tips {
+  p {
+    font-size: 24px;
+    text-align: center;
+    margin: 5px;
+    padding: 0px;
+    color: #ffffff;
+    padding-bottom: 10px;
+    letter-spacing: 5px;
+  }
+}
 
-    .login-box {
-      height: 500px;
-      width: 450px;
-      background: rgba(255, 255, 255, .5);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      border-radius: 20px;
-      box-sizing: border-box;
-      padding: 30px 30px 30px 30px;
+.form-box {
+  width: 100%;
+  margin-top: 10px;
 
-      & > img{
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-      }
-
-      .tips {
-        width: 100%;
-        height: 100px;
-
-        & > p {
-          font-size: 24px;
-          margin: 5px;
-          padding: 0px;
-          color: #ffffff;
-          padding-bottom: 10px;
-          letter-spacing: 5px;
-        }
-      }
-      
-      .form-box{
-
-        .login-form {
-          width: 100%;
-          margin-top: 10px;
-        }
-
-        .info {
-          font-size: 20px;
-
-          & > .el-input__prefix > .el-input__icon {
-          color: #454545;
-          }
-
-          & > input {
-            width: 100%;
-            padding-left: 40px;
-            font-size: 16px;
-          }
-        }
-
-        .if-remember {
-          margin-bottom: 10px;
-          color: #FFFFFF;
-        }
-
-        .login-btn {
-          width: 100%;
-          height: 40px;
-          display: flex;
-          justify-content: center;
-          background-color: #67C23A;
-          border: none;
-          align-items: center;
-          letter-spacing: 15px;
-
-          & >  i {
-            letter-spacing: normal;
-          }
-        }
-
-        .el-button{
-          font-size: 16px;
-        }
-
-        .login-btn:hover {
-          background-color: #67C23A;
-          opacity: 0.6;
-        }
-      }
-
-      .register{
-        letter-spacing: 2px;
-        font-size: 16px;
-        margin-top: 20px;
-      }
+  .info {
+    font-size: 20px;
+    & > .el-input__prefix > .el-input__icon {
+      color: #454545;
+    }
+    & > input {
+      width: 100%;
+      padding-left: 40px;
+      font-size: 16px;
     }
   }
+
+  .confirm-btn {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    background-color: #55ff00;
+    border: none;
+    align-items: center;
+    letter-spacing: 15px;
+    & > i {
+      letter-spacing: normal;
+    }
+  }
+  .el-button {
+    font-size: 16px;
+  }
+  .confirm-btn:hover {
+    background-color: #55ff00;
+    opacity: 0.8;
+  }
+}
+</style>
+<style lang="less">
+.el-loading-mask {
+  .el-loading-spinner {
+    .el-icon-loading {
+      font-size: 24px;
+    }
+    .el-loading-text {
+      font-size: 18px;
+    }
+  }
+}
 </style>
