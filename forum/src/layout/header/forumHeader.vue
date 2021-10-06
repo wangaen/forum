@@ -15,7 +15,7 @@
     </div>
     <div class="my-box" v-else>
       <img :src="avatarUrl" alt="" @mouseenter="ifShowAvatar = false" v-show="ifShowAvatar" />
-      <el-button type="danger" @click="sendBtn" :class="{ opacitySend: $route.path == '/article/send' }">发布</el-button>
+      <el-button type="danger" @click="sendBtn" :class="{ opacitySend: $route.name == 'SendArticle' || $route.name == 'UpdateArticle' }">发布</el-button>
     </div>
     <div @mouseenter="ifShowAvatar = false" @mouseleave="ifShowAvatar = true" v-show="!ifShowAvatar" class="avatar-hover">
       <headMenu @closeMenu="closeMenu"></headMenu>
@@ -80,7 +80,7 @@ export default {
       }
     },
     sendBtn() {
-      this.$router.push({ path: "/article/send", query: { id: this.userId } });
+      this.$router.push("/article/send");
     },
     closeMenu(value) {
       this.ifShowAvatar = value;
@@ -154,13 +154,13 @@ export default {
   margin-right: 30px;
 }
 .opacitySend {
-  opacity: 0;
+  visibility: hidden;
 }
 .avatar-hover {
   position: fixed;
   top: 64px;
   right: 50px;
-  z-index: 100;
+  z-index: 2021;
 }
 .el-button--danger {
   color: #fff;

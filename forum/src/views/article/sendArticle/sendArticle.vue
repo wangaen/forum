@@ -41,8 +41,6 @@ import E from "wangeditor";
 import { articleSendApi, articleUpdate, getOneArticleInfo, deleteImg, uploadArticleImgApi } from "@/api/api";
 export default {
   name: "sendArticle",
-  props: {},
-
   data() {
     return {
       form: {
@@ -53,7 +51,7 @@ export default {
         //详情全部内容
         contentHtml: "",
         //用户id
-        userId: this.$store.getters.getUser._id,
+        userId: this.userId,
         //封面图片
         articleImg: "",
       },
@@ -63,43 +61,49 @@ export default {
       showBtn: true,
       imgUrl: "",
       isUpdate: this.$route.name == "UpdateArticle",
+      isNext: true,
     };
   },
-
-  components: {},
 
   //跳转路由前判断是否继续编辑文章
   beforeRouteLeave(to, from, next) {
     //路由跳转到哪里
-    console.log("tototo", to);
-    if (to.fullPath == `/?id=${this.$store.getters.getUserID}` || to.fullPath == `/article/details/${this.form.id}`) {
-      next();
-    } else {
-      if (this.form.title || this.form.contentHtml || this.form.articleImg) {
-        this.$confirm("你在当前页面已经编辑了文章信息，离开当前页面将会丢失该页面的任何信息。是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
+    if (!this.isNext) return next();
+    if (this.$store.getters.getReadyLoginOut) {
+      this.$store.commit("setReadyLoginOut", false);
+      return next();
+    }
+    if (this.form.title || this.editor.txt.text()) {
+      this.$confirm("你在当前页面已经编辑了文章信息，离开当前页面将会丢失该页面的任何信息。是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //         if (this.form.articleImg && !this.isUpdate) {
+          //           await deleteImg({ url: this.form.articleImg });
+          //         }
+          next();
         })
-          .then(async () => {
-            if (this.form.articleImg && !this.isUpdate) {
-              await deleteImg({ url: this.form.articleImg });
-            }
-            next();
-          })
-          .catch(() => {
-            next(false);
-          });
-      } else {
-        next();
-      }
+        .catch(() => {
+          return false;
+        });
+    } else {
+      next();
     }
   },
   mounted() {
     this.initEditor();
     this.getUpdateForm();
   },
-
+  computed: {
+    userId() {
+      return this.$store.getters.getUser._id;
+    },
+    token() {
+      return this.$store.getters.getToken;
+    },
+  },
   methods: {
     //创建wangEditor富文本编辑器
     initEditor() {
@@ -174,6 +178,8 @@ export default {
     },
     //点击发表文章
     async sendArticleEvent() {
+      this.isNext = false;
+      this.form.userId = this.userId;
       this.form.contentText = this.editor.txt.text().slice(0, 120);
       this.form.contentHtml = this.editor.txt.html();
       if (!this.form.title || !this.form.contentText) {
@@ -187,7 +193,7 @@ export default {
         }, 700);
       } else {
         await articleSendApi(this.form);
-        this.$router.push({ path: "/", query: { id: this.form.userId } });
+        this.$router.push("/");
       }
     },
   },

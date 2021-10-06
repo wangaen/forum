@@ -28,6 +28,13 @@ export default {
     getUserInfo() {
       return this.$store.getters.getUser;
     },
+    readyLoginOut() {
+      return (
+        (this.$route.name === "SendArticle" || this.$route.name === "UpdateArticle") &&
+        this.$store.getters.getReadyLoginOut &&
+        (document.getElementsByClassName("el-input__inner")[1].value || document.getElementsByClassName("w-e-text")[0].textContent)
+      );
+    },
   },
   methods: {
     async selectMenu(index) {
@@ -39,18 +46,29 @@ export default {
       } else if (index == 3) {
         this.$router.push({ path: "/user/update_pass" }, () => {});
       } else if (index == 4) {
-        this.$confirm("是否退出登录?", "提示", {
+        this.$store.commit("setReadyLoginOut", true);
+        this.$confirm(`${this.readyLoginOut ? "你在当前页面已经编辑了文章信息，离开当前页面将会丢失该页面的任何信息。" : ""}是否继续退出登录?`, "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
         })
           .then(() => {
+            history.pushState(history.state, "", document.URL);
+            window.addEventListener("popstate", this.cancelGoBack);
             this.$route.path !== "/" && this.$router.push("/");
             localStorage.clear();
           })
-          .catch(() => {});
+          .catch(() => {
+            this.$store.commit("setReadyLoginOut", false);
+          });
       }
     },
+    cancelGoBack() {
+      history.pushState(history.state, "", document.URL);
+    },
+  },
+  beforeDestroy() {
+    window.removeEventListener("popstate", this.cancelGoBack);
   },
 };
 </script>

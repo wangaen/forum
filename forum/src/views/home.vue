@@ -26,6 +26,23 @@ export default {
     forumFooter,
     forumMain,
   },
+  beforeRouteEnter(to, from, next) {
+    if (to.name === "Home" && from.name === "Login") {
+      next((vm) => {
+        history.pushState(history.state, "", document.URL);
+        window.addEventListener("popstate", vm.cancelGoBack);
+      });
+    }
+    next();
+  },
+  methods: {
+    cancelGoBack() {
+      history.pushState(history.state, "", document.URL);
+    },
+  },
+  beforeDestroy() {
+    window.removeEventListener("popstate", this.cancelGoBack);
+  },
 };
 </script>
 

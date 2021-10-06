@@ -8,7 +8,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       //expiresln 设置token过期的时间
       // jwt.sign()生成token
-      const token = jwt.sign({ nickname, _id }, jwtScrect, { expiresIn: '0.5h' });
+      const token = jwt.sign({ nickname, _id }, jwtScrect, { expiresIn: '0.1h' });
       resolve(token)
     })
   },
