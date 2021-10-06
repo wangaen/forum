@@ -55,7 +55,7 @@ export default {
           if (this.ruleForm.newpass === this.ruleForm.okpass) {
             const res = updatePassApi(this.ruleForm);
             if (res) {
-              this.$tools.diyTips("修改密码成功,请重新登录", "success", 500);
+              this.$utils.diyTips("修改密码成功,请重新登录", "success", 500);
               setTimeout(() => {
                 this.$router.push("/login");
                 localStorage.clear();

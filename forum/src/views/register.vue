@@ -41,7 +41,7 @@ export default {
         if (valid) {
           let data = await registerApi(this.ruleForm);
           if (!data) return;
-          await this.$tools.diyTips("注册成功,正在跳转登录界面......", "success", 1000);
+          await this.$utils.diyTips("注册成功,正在跳转登录界面......", "success", 1000);
           setTimeout(() => {
             this.$router.push("/login")
           }, 1200);

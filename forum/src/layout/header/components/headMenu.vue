@@ -24,18 +24,6 @@
 <script>
 export default {
   name: "headMenu",
-  props: {},
-  data() {
-    return {
-      show: false,
-    };
-  },
-  created() {},
-  computed: {
-    getUpdateAvatarStatu() {
-      return this.$store.getters.getUpdateAvatarStatu;
-    },
-  },
   computed: {
     getUserInfo() {
       return this.$store.getters.getUser;
@@ -61,15 +49,6 @@ export default {
             localStorage.clear();
           })
           .catch(() => {});
-      }
-    },
-  },
-  watch: {
-    getUpdateAvatarStatu(val) {
-      if (val) {
-        setTimeout(() => {
-          this.getData();
-        }, 500);
       }
     },
   },

@@ -67,7 +67,7 @@ export default {
     // 时间转换
     getTime() {
       return function (value) {
-        return this.$tools.getDate(value);
+        return this.$utils.getDate(value);
       };
     },
   },

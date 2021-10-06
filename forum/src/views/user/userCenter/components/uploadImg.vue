@@ -39,7 +39,7 @@ export default {
       this.$emit("closeUploadImg", false);
     },
     getFile(file) {
-      this.$tools.getBase64(file).then((res) => {
+      this.$utils.getBase64(file).then((res) => {
         if (res) {
           this.showImg = false;
           this.imgUrl = res;
@@ -62,7 +62,7 @@ export default {
     //确认上传
     async confirmUpload() {
       let res = await uploadAvatarImgApi(this.filedata);
-      this.$tools.diyTips(res.message, res.type);
+      this.$utils.diyTips(res.message, res.type);
       this.closeClick();
       this.$emit("updateImg");
     },

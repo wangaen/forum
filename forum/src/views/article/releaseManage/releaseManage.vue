@@ -68,7 +68,6 @@
 
 <script>
 import { getUserAllArticles, totalRaticleReadLikeApi, addReadNumApi, articleDelete } from "@/api/api";
-import { getUserId } from "@/utils/index";
 export default {
   name: "releaseManage",
   data() {
@@ -78,7 +77,7 @@ export default {
       sortLabel: ["按最新发布时间", "按访问量", "按点赞量", "按评论量"],
       articleTotalData: [],
       totalpage: 2,
-      isMe: this.$route.params.id === getUserId(),
+      isMe: this.$route.params.id === this.$utils.getUserId(),
       allArticle: [],
       form: {
         userId: this.$route.params.id,
@@ -144,7 +143,7 @@ export default {
         .then(async () => {
           const res = await articleDelete({ id });
           if (res.code === 200) {
-            this.$tools.diyTips("删除成功", "success");
+            this.$utils.diyTips("删除成功", "success");
             this.totalRaticleReadLikeApi();
             this.getUserAllArticles();
           }
@@ -156,7 +155,7 @@ export default {
     // 时间转换
     timeToDate() {
       return function (time) {
-        return this.$tools.timeToDate(time);
+        return this.$utils.timeToDate(time);
       };
     },
     userInfo() {

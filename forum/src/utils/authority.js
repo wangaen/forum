@@ -1,5 +1,5 @@
 import store from '@/store'
-import { diyTips } from '@/utils/tools/tools'
+import $utils from '@/utils/index'
 import router from "@/router"
 
 // token判断登录状态，user一旦存在就不允许修改
@@ -17,7 +17,7 @@ export const userAuthority = () => {
       !afterToken && localStorage.removeItem("token")
     }
     if (afterToken && beforeUser && beforeUser !== afterUser) {
-      diyTips("获取用户信息失败，请重新登录-权限", "warning")
+      $utils.diyTips("获取用户信息失败，请重新登录-权限", "warning")
       localStorage.clear()
       beforeUser = JSON.stringify(localStorage.getItem("id"))
       router.currentRoute.path !== "/" && router.push("/")

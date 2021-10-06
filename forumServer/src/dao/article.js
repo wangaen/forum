@@ -26,7 +26,7 @@ router.get('/article/RaticleReadLike', async (req, res) => {
     const isNullStr = tools.checkNull(req.query)
     if (isNullStr) return res.status(200).json(tools.response(-1, null, isNullStr))
     const { userId } = req.query
-    let articleTotal = await Article.find({ userId }).count()
+    let articleTotal = await Article.find({ userId }).countDocuments()
     let likeNum = 0
     let readTotal = 0
     let commentNum = 0
@@ -61,7 +61,7 @@ router.get('/article/getArticleData', async (req, res) => {
   try {
     let data = await Article.find(search, { contentHtml: 0 }).sort({ createdTime: -1 }).limit(20).skip(skipNum)
       .populate('userId', { password: 0, __V: 0 })
-    let articleTotal = await Article.find(search, { contentHtml: 0 }).sort({ createdTime: -1 }).count()
+    let articleTotal = await Article.find(search, { contentHtml: 0 }).sort({ createdTime: -1 }).countDocuments()
     let articleData = { articleData: data, total: articleTotal }
     res.status(200).json(tools.response(200, articleData, '获取成功'))
   } catch (err) {

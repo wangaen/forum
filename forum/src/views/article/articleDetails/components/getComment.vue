@@ -122,7 +122,6 @@
 
 <script>
 import { commentGetApi, commentAddApi, commentDelete } from "@/api/api";
-import { getUserId } from "@/utils/index";
 export default {
   name: "getComment",
   data() {
@@ -133,14 +132,14 @@ export default {
       commentArticle: "",
       total: 10,
       nowPage: 1,
-      isMe: getUserId(),
+      isMe: this.$utils.getUserId(),
       allCommentData: [],
       commentForm: {
         articleId: this.$route.params.id,
         content: "",
         parentId: "",
         commentGrade: "",
-        fromUserId: getUserId(),
+        fromUserId: this.$utils.getUserId(),
         toUserId: "",
       },
       form: {
@@ -190,7 +189,7 @@ export default {
         this.showOneComment = index;
         this.showChildComment = "";
       } else {
-        this.$tools.diyTips("您还未登录，请登录后再试！！！", "error", 5000);
+        this.$utils.diyTips("您还未登录，请登录后再试！！！", "error", 5000);
       }
     },
     //点击评论文章输入框
@@ -201,7 +200,7 @@ export default {
         this.showBtn = true;
         this.showChildComment = "";
       } else {
-        this.$tools.diyTips("您还未登录，请登录后再试！！！", "error", 5000);
+        this.$utils.diyTips("您还未登录，请登录后再试！！！", "error", 5000);
       }
     },
     //取消评论
@@ -219,7 +218,7 @@ export default {
     async sendComment() {
       if (this.getToken) {
         this.commentForm.content = this.commentArticle;
-        this.commentForm.toUserId = getUserId();
+        this.commentForm.toUserId = this.$utils.getUserId();
         this.commentForm.commentGrade = "1";
         const res = await commentAddApi(this.commentForm);
         if (res.code === 200) {
@@ -227,18 +226,18 @@ export default {
           this.commentForm.content = "";
           this.commentArticle = "";
           this.showBtn = false;
-          this.$tools.diyTips("评论成功", "success");
+          this.$utils.diyTips("评论成功", "success");
           this.$emit("commentNumAdd");
         }
       } else {
-        this.$tools.diyTips("请登录后再发表评论", "error");
+        this.$utils.diyTips("请登录后再发表评论", "error");
       }
     },
     async sendReply() {
       if (this.getToken) {
         const res = await commentAddApi(this.commentForm);
         if (res.code == 200) {
-          this.$tools.diyTips("回复成功", "success");
+          this.$utils.diyTips("回复成功", "success");
           this.$emit("commentNumAdd");
           this.showChildComment = "";
           this.showOneComment = -1;
@@ -246,7 +245,7 @@ export default {
           this.getData();
         }
       } else {
-        this.$tools.diyTips("请登录后再进行回复操作", "error");
+        this.$utils.diyTips("请登录后再进行回复操作", "error");
       }
     },
 
@@ -281,7 +280,7 @@ export default {
           }
           deleteForm = JSON.stringify(deleteForm);
           await commentDelete({ deleteForm, articleId: this.$route.params.id });
-          this.$tools.diyTips("删除成功", "success");
+          this.$utils.diyTips("删除成功", "success");
           this.$emit("commentNumAdd");
           this.getData();
         })
@@ -309,7 +308,7 @@ export default {
         //对应位置插入回复框
         this.showOneComment = -1;
       } else {
-        this.$tools.diyTips("您还未登录，请登录后再试！！！", "error", 5000);
+        this.$utils.diyTips("您还未登录，请登录后再试！！！", "error", 5000);
       }
     },
     goUserDetail(userId) {
@@ -331,7 +330,7 @@ export default {
     // 时间转换
     getTime() {
       return function (value) {
-        return this.$tools.timeToDate(value);
+        return this.$utils.timeToDate(value);
       };
     },
   },

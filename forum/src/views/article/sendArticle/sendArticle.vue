@@ -38,7 +38,7 @@
 
 <script>
 import E from "wangeditor";
-import { articleSendApi, articleUpdate, getOneArticleInfo } from "@/api/api";
+import { articleSendApi, articleUpdate, getOneArticleInfo, deleteImg, uploadArticleImgApi } from "@/api/api";
 export default {
   name: "sendArticle",
   props: {},
@@ -71,7 +71,7 @@ export default {
   //跳转路由前判断是否继续编辑文章
   beforeRouteLeave(to, from, next) {
     //路由跳转到哪里
-    console.log("tototo",to)
+    console.log("tototo", to);
     if (to.fullPath == `/?id=${this.$store.getters.getUserID}` || to.fullPath == `/article/details/${this.form.id}`) {
       next();
     } else {
@@ -81,9 +81,9 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         })
-          .then(() => {
+          .then(async () => {
             if (this.form.articleImg && !this.isUpdate) {
-              this.$Api.deleteImg({ url: this.form.articleImg }).then(() => {});
+              await deleteImg({ url: this.form.articleImg });
             }
             next();
           })
@@ -136,7 +136,7 @@ export default {
       }
     },
     getFile(file) {
-      this.$tools.getBase64(file).then((res) => {
+      this.$utils.getBase64(file).then((res) => {
         if (res) {
           this.uploadOrImg = false;
           this.imgUrl = res;
@@ -156,37 +156,32 @@ export default {
       this.imgUrl = "";
     },
     //修改时取消上传
-    cancelUploadImg() {
+    async cancelUploadImg() {
       this.uploadOrImg = true;
       if (this.isUpdate && this.imgUrl && /^https?:\/\/[0-9]/.test(this.imgUrl)) {
         //删除之前的图片
-        this.$Api.deleteImg({ url: this.imgUrl }).then(() => {
-          this.imgUrl = "";
-        });
+        await deleteImg({ url: this.imgUrl });
+        this.imgUrl = "";
       }
     },
     //确认上传
-    confirmUpload() {
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-      this.$Api.uploadArticleImgApi(this.filedata, config).then((res) => {
+    async confirmUpload() {
+      const res = uploadArticleImgApi(this.filedata);
+      if (res.code === 200) {
         this.showBtn = false;
         this.form.articleImg = res.articleImg;
-      });
+      }
     },
     //点击发表文章
     async sendArticleEvent() {
       this.form.contentText = this.editor.txt.text().slice(0, 120);
       this.form.contentHtml = this.editor.txt.html();
       if (!this.form.title || !this.form.contentText) {
-        return this.$tools.diyTips("请输入文章标题或内容", "warning");
+        return this.$utils.diyTips("请输入文章标题或内容", "warning");
       }
       if (this.isUpdate) {
         await articleUpdate(this.form);
-        this.$tools.diyTips("修改文章成功", "success", 500);
+        this.$utils.diyTips("修改文章成功", "success", 500);
         setTimeout(() => {
           this.$router.push(`/article/details/${this.form.id}`);
         }, 700);

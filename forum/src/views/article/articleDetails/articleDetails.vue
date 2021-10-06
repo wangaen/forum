@@ -59,7 +59,6 @@
 
 <script>
 import getComment from "./components/getComment";
-import { getUserId } from "@/utils/index";
 import { isLikeArticle, getOneArticleInfo, addLikeNum, totalRaticleReadLikeApi } from "@/api/api";
 export default {
   name: "articleDetails",
@@ -75,7 +74,7 @@ export default {
         status: false,
         form: {
           articleId: this.$route.params.id,
-          userId: getUserId(),
+          userId: this.$utils.getUserId(),
         },
       },
     };
@@ -127,7 +126,7 @@ export default {
           this.timer = null;
         }, 300);
       } else {
-        this.$tools.diyTips("您还未登录，请登录后操作", "error", 3000);
+        this.$utils.diyTips("您还未登录，请登录后操作", "error", 3000);
       }
     },
     commentNumAdd() {
@@ -141,7 +140,7 @@ export default {
   computed: {
     timeToDate() {
       return function (time) {
-        return this.$tools.timeToDate(time);
+        return this.$utils.timeToDate(time);
       };
     },
   },

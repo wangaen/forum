@@ -38,7 +38,7 @@ router.get('/comment/allData', async (req, res) => {
   const { pageNum, sortStatus: createdTime, articleId } = req.query
   let pNum = (pageNum == 1 ? 0 : (pageNum - 1) * 10)
   try {
-    let total = await Comment.find({ articleId, commentGrade: '1' }).count()
+    let total = await Comment.find({ articleId, commentGrade: '1' }).countDocuments()
     //所有评论/一级评论
     let data = await Comment.find({ articleId, commentGrade: '1' }, { toUserId: 0, __v: 0 })
       .limit(10).skip(pNum).sort({ createdTime })

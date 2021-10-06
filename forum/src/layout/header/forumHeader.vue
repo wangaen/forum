@@ -26,7 +26,6 @@
 <script>
 import headLabel from "./components/headLabel.vue";
 import headMenu from "./components/headMenu.vue";
-import { getUserId } from "@/utils/index";
 import { userAuthority } from "@/utils/authority";
 import { getUserInfo } from "@/api/api";
 import { mapGetters } from "vuex";
@@ -39,10 +38,7 @@ export default {
   },
   data() {
     return {
-      searchText: "",
       ifShowAvatar: true,
-      //当前是否正在进行模糊查询
-      nowSearch: false,
       userId: "",
       timer: null,
     };
@@ -75,7 +71,7 @@ export default {
   },
   methods: {
     async init() {
-      this.userId = getUserId();
+      this.userId = this.$utils.getUserId();
       if (this.userId) {
         let res = await getUserInfo({ id: this.userId });
         if (res) {
