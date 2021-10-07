@@ -8,7 +8,7 @@
         <forum-main />
       </el-main>
       <el-footer>
-        <forum-footer />
+        <forum-footer v-show="$route.name === 'Home'" />
       </el-footer>
     </el-container>
   </div>

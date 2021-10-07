@@ -1,14 +1,14 @@
 let mongoose = require('mongoose')
 
 // 连接数据库
-  mongoose.connect('mongodb://root:000000@127.0.0.1:27017/forum?authSource=admin',
-  { 
-    useNewUrlParser: true ,
-    useUnifiedTopology:true,
-    useFindAndModify:false
+mongoose.connect('mongodb://root:000000@127.0.0.1:27017/forum?authSource=admin',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
   })
-  .then(() => console.log( '数据库连接成功article' ))
-  .catch(err => console.log( '数据库连接失败' + err ));
+  .then(() => console.log('数据库连接成功article'))
+  .catch(err => console.log('数据库连接失败' + err));
 
 var Schema = mongoose.Schema
 
@@ -21,7 +21,7 @@ var articleSchema = new Schema({
   //展示部分内容
   contentText: {
     type: String,
-    required: true
+    default: ''
   },
   //详情全部内容
   contentHtml: {
@@ -29,7 +29,7 @@ var articleSchema = new Schema({
     required: true
   },
   //用户id
-  userId:{
+  userId: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
@@ -43,23 +43,23 @@ var articleSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  //封面图片
-  articleImg: {
-    type: String,
-    default: ''
+  //图片
+  articleImgs: {
+    type: Array,
+    default: []
   },
   //点赞
-  likeNum:{
+  likeNum: {
     type: Number,
     default: 0
   },
   //阅读数
-  readNum:{
+  readNum: {
     type: Number,
     default: 1
   },
   //评论数
-  commentNum:{
+  commentNum: {
     type: Number,
     default: 0,
   }

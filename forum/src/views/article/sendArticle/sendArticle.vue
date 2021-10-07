@@ -8,28 +8,6 @@
         </div>
         <div class="article-box">
           <div class="con-l" id="editor"></div>
-          <!-- <div class="con-r">
-          <el-upload
-            v-if="uploadOrImg"
-            class="upload-demo"
-            :http-request="handleUpload"
-            action
-            :limit="1"
-            :show-file-list="false"
-            drag
-          >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text"><em>上传封面图片</em></div>
-          </el-upload>
-
-          <div v-else class="img-box">
-            <img :src="imgUrl" alt="" style="width:190px;height:190px;border-radius:6px;">
-            <div class="select-btn" v-if="showBtn">
-              <el-button type="info" plain @click="cancelUploadImg">取消</el-button>
-              <el-button type="danger" plain @click="confirmUpload">确认</el-button>
-            </div>
-          </div>
-        </div> -->
         </div>
       </div>
     </div>
@@ -52,14 +30,12 @@ export default {
         contentHtml: "",
         //用户id
         userId: this.userId,
-        //封面图片
-        articleImg: "",
+        //图片
+        articleImgs: [],
       },
-      filedata: "",
-      editor: "",
-      uploadOrImg: true,
+      beforeArticleImgs: [],
+      editor: null,
       showBtn: true,
-      imgUrl: "",
       isUpdate: this.$route.name == "UpdateArticle",
       isNext: true,
     };
@@ -69,20 +45,20 @@ export default {
   beforeRouteLeave(to, from, next) {
     //路由跳转到哪里
     if (!this.isNext) return next();
+    //点击退出登录
     if (this.$store.getters.getReadyLoginOut) {
       this.$store.commit("setReadyLoginOut", false);
+      this.outDelArticleImgs();
       return next();
     }
-    if (this.form.title || this.editor.txt.text()) {
+    if (this.form.title || this.editor.txt.html()) {
       this.$confirm("你在当前页面已经编辑了文章信息，离开当前页面将会丢失该页面的任何信息。是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          //         if (this.form.articleImg && !this.isUpdate) {
-          //           await deleteImg({ url: this.form.articleImg });
-          //         }
+          this.outDelArticleImgs();
           next();
         })
         .catch(() => {
@@ -109,12 +85,12 @@ export default {
     initEditor() {
       this.editor = new E("#editor");
       // 设置编辑区域高度
-      this.editor.config.height = 505;
+      this.editor.config.height = 640;
       //改变默认的z-index
       this.editor.config.zIndex = 500;
       this.editor.config.placeholder = "请输入文章内容";
       // 配置菜单栏，设置不需要的菜单
-      this.editor.config.excludeMenus = ["video", "code"];
+      this.editor.config.excludeMenus = ["video"];
       // 配置颜色（文字颜色、背景色）
       this.editor.config.colors = ["#ffffff", "#ff0000", "#ff9900", "#ffff00", "#00ff00", "#009933", "#3399ff", "#0000ff", "#000000", "#bf4080", "#00ffaa", "#ff3399"];
       // 配置行高
@@ -122,72 +98,65 @@ export default {
       //来关闭样式过滤
       this.editor.config.pasteFilterStyle = false;
       this.editor.config.pasteIgnoreImg = false;
+      //隐藏网络图片
+      this.editor.config.showLinkImg = false;
+      // 上传超时时间
+      this.editor.config.uploadImgTimeout = 15 * 1000;
+      // 当次最多上传图片个数
+      this.editor.config.uploadImgMaxLength = 5;
+      // 图片大小最大为2M
+      this.editor.config.uploadImgMaxSize = 2 * 1024 * 1024; // 2M
+
+      // resultFiles 是 input 中选中的文件列表; insertImgFn 是获取图片 url 后，插入到编辑器的方法
+      this.editor.config.customUploadImg = async (resultFiles, insertImgFn) => {
+        const formData = new FormData();
+        resultFiles.forEach(async (item) => {
+          formData.append("articleImg", item);
+        });
+        const res = await uploadArticleImgApi(formData);
+        if (res.code === 200) {
+          res.data.forEach((item) => {
+            insertImgFn(item);
+            this.form.articleImgs.push(item);
+          });
+        }
+      };
+
       this.editor.create();
     },
     async getUpdateForm() {
       if (this.isUpdate) {
         const { id } = this.$route.params;
         const res = await getOneArticleInfo({ id });
-        if (res) {
+        if (res.code === 200) {
           this.form.contentHtml = res.data.contentHtml;
           this.form.title = res.data.title;
-          // this.form.articleImg = res.data.articleImg
-          this.imgUrl = res.data.articleImg;
-          this.uploadOrImg = this.imgUrl ? false : true;
+          this.beforeArticleImgs = JSON.parse(JSON.stringify(res.data.articleImgs));
+          this.form.articleImgs = res.data.articleImgs;
           this.form.id = id;
           this.editor.txt.html(this.form.contentHtml);
         }
       }
     },
-    getFile(file) {
-      this.$utils.getBase64(file).then((res) => {
-        if (res) {
-          this.uploadOrImg = false;
-          this.imgUrl = res;
-        }
-      });
-    },
-    // 覆盖默认的上传行为，可以自定义上传的实现
-    handleUpload(res) {
-      let formData = new FormData();
-      formData.append("avatar", res.file);
-      this.filedata = formData;
-      this.getFile(res.file);
-    },
-    //选择时取消上传
-    cancelUpload() {
-      this.uploadOrImg = true;
-      this.imgUrl = "";
-    },
-    //修改时取消上传
-    async cancelUploadImg() {
-      this.uploadOrImg = true;
-      if (this.isUpdate && this.imgUrl && /^https?:\/\/[0-9]/.test(this.imgUrl)) {
-        //删除之前的图片
-        await deleteImg({ url: this.imgUrl });
-        this.imgUrl = "";
-      }
-    },
-    //确认上传
-    async confirmUpload() {
-      const res = uploadArticleImgApi(this.filedata);
-      if (res.code === 200) {
-        this.showBtn = false;
-        this.form.articleImg = res.articleImg;
-      }
-    },
     //点击发表文章
     async sendArticleEvent() {
+      const html = this.editor.txt.html();
+      this.form.articleImgs.forEach(async (item) => {
+        if (!html.includes(item)) {
+          this.form.articleImgs = this.form.articleImgs.filter((value) => value !== item);
+          await deleteImg({ url: item });
+        }
+      });
       this.isNext = false;
       this.form.userId = this.userId;
       this.form.contentText = this.editor.txt.text().slice(0, 120);
-      this.form.contentHtml = this.editor.txt.html();
-      if (!this.form.title || !this.form.contentText) {
-        return this.$utils.diyTips("请输入文章标题或内容", "warning");
+      this.form.contentHtml = html;
+      if (!this.form.title || !this.form.contentHtml) {
+        return this.$utils.elMessageBox("请输入文章标题或内容", "warning");
       }
       if (this.isUpdate) {
         await articleUpdate(this.form);
-        this.$utils.diyTips("修改文章成功", "success", 500);
+        this.$utils.elMessageBox("修改文章成功", "success", 500);
         setTimeout(() => {
           this.$router.push(`/article/details/${this.form.id}`);
         }, 700);
@@ -196,11 +165,25 @@ export default {
         this.$router.push("/");
       }
     },
+    outDelArticleImgs() {
+      if (!this.beforeArticleImgs.length) {
+        this.form.articleImgs.forEach(async (item) => {
+          await deleteImg({ url: item });
+        });
+      } else if (JSON.stringify(this.form.articleImgs) !== JSON.stringify(this.beforeArticleImgs)) {
+        this.form.articleImgs.forEach(async (item) => {
+          if (!this.beforeArticleImgs.some((value) => value === item)) {
+            await deleteImg({ url: item });
+          }
+        });
+      }
+    },
   },
   beforeDestroy() {
     // 销毁编辑器
     this.editor.destroy();
     this.editor = null;
+    this.form = null;
   },
 };
 </script>

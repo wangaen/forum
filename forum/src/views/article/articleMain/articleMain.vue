@@ -29,7 +29,7 @@
           <el-table-column width="250px">
             <template slot-scope="scope">
               <div class="demo-image__preview">
-                <el-image style="width: 250px; height: 150px" :src="scope.row.articleImg" :preview-src-list="[scope.row.articleImg]" lazy>
+                <el-image style="width: 250px; height: 150px" :src="scope.row.articleImgs[0]" :preview-src-list="[scope.row.articleImg]" lazy>
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                   </div>
@@ -74,7 +74,7 @@ export default {
   methods: {
     async getData() {
       let res = await getArticleData(this.searchForm);
-      if (res) {
+      if (res.code === 200) {
         this.tableData = res.data.articleData;
         this.highLight(this.tableData);
         this.total = res.data.total;

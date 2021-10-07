@@ -49,12 +49,14 @@ module.exports = {
     return ''
   },
   deleteFile: (file) => {
-    fs.unlink(file, (err) => {
-      if (err) {
-        return err
-      } else {
-        return null
-      }
+    return new Promise((resolve) => {
+      fs.unlink(file, (err) => {
+        if (err) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
     })
   }
 }

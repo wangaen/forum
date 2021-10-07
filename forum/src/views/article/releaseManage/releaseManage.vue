@@ -47,7 +47,7 @@
               <el-table-column width="200px">
                 <template slot-scope="scope">
                   <div class="demo-image__preview">
-                    <el-image style="width: 190px; height: 120px" :src="scope.row.articleImg" :preview-src-list="[scope.row.articleImg]" lazy>
+                    <el-image style="width: 190px; height: 120px" :src="scope.row.articleImgs[0]" :preview-src-list="[scope.row.articleImg]" lazy>
                       <div slot="error" class="image-slot">
                         <i class="el-icon-picture-outline"></i>
                       </div>
@@ -143,7 +143,7 @@ export default {
         .then(async () => {
           const res = await articleDelete({ id });
           if (res.code === 200) {
-            this.$utils.diyTips("删除成功", "success");
+            this.$utils.elMessageBox("删除成功", "success");
             this.totalRaticleReadLikeApi();
             this.getUserAllArticles();
           }

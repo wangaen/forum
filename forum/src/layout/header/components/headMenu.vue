@@ -32,7 +32,7 @@ export default {
       return (
         (this.$route.name === "SendArticle" || this.$route.name === "UpdateArticle") &&
         this.$store.getters.getReadyLoginOut &&
-        (document.getElementsByClassName("el-input__inner")[1].value || document.getElementsByClassName("w-e-text")[0].textContent)
+        (document.getElementsByClassName("el-input__inner")[1].value || document.getElementsByClassName("w-e-text")[0].innerHTML)
       );
     },
   },

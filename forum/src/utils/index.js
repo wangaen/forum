@@ -29,12 +29,12 @@ export default {
  * @param {String} type //提示类型
  * @param {Number} time //展示时间
  */
-  diyTips: (str, type, time) => {
+  elMessageBox: (str, type, time) => {
     Message({
       message: str,
       type: type,
       duration: time || 3000,
-      offset: 100
+      offset: 100 //距离顶部
     });
   },
 

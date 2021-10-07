@@ -3,7 +3,7 @@ const api = '/api'
 
 export const loginApi = (params) => { return axios.post(`${api}/login`, params) };  //登录
 export const registerApi = (params) => { return axios.post(`${api}/register`, params) };  //注册
-export const deleteImg = (params) => { return axios.delete(`${api}/deleteImg`, params) }; //删除图片
+export const deleteImg = (params) => { return axios.delete(`${api}/deleteImg`, { params }) }; //删除图片
 
 /********************************************************************************************************
  ******************************************  user 用户  *************************************************
@@ -23,7 +23,7 @@ export const getUserAllArticles = (params) => { return axios.get(`${api}/article
 export const getOneArticleInfo = (params) => { return axios.get(`${api}/article/getOneArticleInfo`, { params }) }; //获取文章信息
 export const articleSendApi = (params) => { return axios.post(`${api}/article/send`, params) };  //发表文章
 export const totalRaticleReadLikeApi = (params) => { return axios.get(`${api}/article/RaticleReadLike`, { params }) };  //获取总浏览量，点赞总数，文章总数
-export const uploadArticleImgApi = (params) => { return axios.post(`${api}/article/uploadImg`, params) }; //上传文章图片
+export const uploadArticleImgApi = (params) => { return axios.post(`${api}/article/uploadImgs`, params) }; //上传文章图片
 export const addReadNumApi = (params) => { return axios.post(`${api}/article/addReadNum`, params) }; //每点击一次文章，浏览量 + 1
 export const articleUpdate = (params) => { return axios.put(`${api}/article/update`, params) }; //修改文章
 export const articleDelete = (params) => { return axios.delete(`${api}/article/delete`, { params }) }; //删除文章

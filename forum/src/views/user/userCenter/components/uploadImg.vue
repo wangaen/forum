@@ -62,7 +62,10 @@ export default {
     //确认上传
     async confirmUpload() {
       let res = await uploadAvatarImgApi(this.filedata);
-      this.$utils.diyTips(res.message, res.type);
+      console.log(res);
+      if (res.code === 200) {
+        this.$utils.elMessageBox("更换头像成功", "success");
+      }
       this.closeClick();
       this.$emit("updateImg");
     },

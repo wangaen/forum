@@ -126,7 +126,7 @@ export default {
           this.timer = null;
         }, 300);
       } else {
-        this.$utils.diyTips("您还未登录，请登录后操作", "error", 3000);
+        this.$utils.elMessageBox("您还未登录，请登录后操作", "error", 3000);
       }
     },
     commentNumAdd() {

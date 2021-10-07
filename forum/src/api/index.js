@@ -32,16 +32,16 @@ axios.interceptors.response.use(
       if (router.currentRoute.path !== "/" && router.currentRoute.path !== "/login") {
         router.push("/")
       }
-      return $utils.diyTips("登录失效，请重新登录-全局", "warning")
+      return $utils.elMessageBox("登录失效，请重新登录-全局", "warning")
     }
     if ([-1, 400, 401].includes(response.data.code)) {
-      return $utils.diyTips(response.data.msg, "warning")
+      return $utils.elMessageBox(response.data.msg, "warning")
     }
     return response.data;
   },
   error => {
     if (JSON.stringify(error).includes(" Request failed")) {
-      $utils.diyTips("请求错误，请稍后再试-全局", "error")
+      $utils.elMessageBox("请求错误，请稍后再试-全局", "error")
     }
     return Promise.reject(error);
   }

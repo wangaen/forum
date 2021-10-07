@@ -17,7 +17,7 @@ export const userAuthority = () => {
       !afterToken && localStorage.removeItem("token")
     }
     if (afterToken && beforeUser && beforeUser !== afterUser) {
-      $utils.diyTips("获取用户信息失败，请重新登录-权限", "warning")
+      $utils.elMessageBox("获取用户信息失败，请重新登录-权限", "warning")
       localStorage.clear()
       beforeUser = JSON.stringify(localStorage.getItem("id"))
       router.currentRoute.path !== "/" && router.push("/")
