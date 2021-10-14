@@ -3,7 +3,7 @@ const router = express.Router()
 const User = require('../schema/user')
 const upload = require('../upload')
 const tools = require('../tools/index')
-const api = require('../api/api')
+const Api = require('../api/api')
 
 const delRoot = __dirname.toString().split("dao")[0]
 
@@ -45,7 +45,7 @@ router.post('/user/avatar/upload', upload.single('avatar'), async (req, res) => 
     }
 
     //保存到user中的avatar
-    const avatar = api.api + req.file.destination.split("/")[2] + '/' + req.file.filename
+    const avatar = Api.api + req.file.destination.split("/")[2] + '/' + req.file.filename
     await User.findByIdAndUpdate(_id, { avatar })
     res.status(200).json(tools.response(200, null, '更换头像图片成功'))
   } catch (err) {
@@ -63,7 +63,7 @@ router.post('/article/uploadImgs', upload.array('articleImg', 5), (req, res) => 
   try {
     if (!files.length) return res.status(200).json(tools.response(-1, null, '至少选择一张图片'))
     let articleImgs = [];
-    files.forEach(item => articleImgs.push(`${api.api}${item.destination.split("/")[2]}/${item.filename}`))
+    files.forEach(item => articleImgs.push(`${Api.api}${item.destination.split("/")[2]}/${item.filename}`))
     res.status(200).json(tools.response(200, articleImgs, '上传文章图片成功'))
   } catch (err) {
     // 出现异常时，删除已上传的图片

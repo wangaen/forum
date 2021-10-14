@@ -12,9 +12,12 @@
     "mongoose": "^5.11.18",
     "multer": "^1.4.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  },
   "scripts": {
-    "start": "nodemon ./src/app.js"
+    "dev": "cross-env NODE_ENV=development nodemon ./src/app.js",
+    "service": "cross-env NODE_ENV=production nodemon ./src/app.js"
   },
   "keywords": [],
   "author": "wangyuliang",

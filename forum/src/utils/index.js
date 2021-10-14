@@ -29,7 +29,8 @@ export default {
  * @param {String} type //提示类型
  * @param {Number} time //展示时间
  */
-  elMessageBox: (str, type, time) => {
+  elMessageBox: (str, type, time, onlyOne = false) => {
+    if (onlyOne && document.getElementsByClassName(`el-message--${type}`).length) return;
     Message({
       message: str,
       type: type,

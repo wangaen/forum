@@ -1,45 +1,42 @@
 <template>
   <div class="index">
     <div class="index-main">
-      <template>
-        <el-table :data="tableData" style="width: 100%">
-          <el-backtop :right="40" :bottom="60" :visibility-height="2000"></el-backtop>
-          <el-table-column width="800px">
-            <template slot-scope="scope">
-              <div class="tb-t-top" @click="goToArticleDetails(scope.row._id)">
-                <span v-html="scope.row.title"></span>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column width="800px">
+          <template slot-scope="scope">
+            <div class="tb-t-top" @click="goToArticleDetails(scope.row._id)">
+              <span v-html="scope.row.title"></span>
+            </div>
+            <div class="tb-t-center">
+              <p v-html="scope.row.contentText"></p>
+            </div>
+            <div class="tb-t-bottom">
+              <div>
+                <img :src="scope.row.userId.avatar" @click="goToUserDetails(scope.row.userId._id)" />
+                <span class="nickname" @click="goToUserDetails(scope.row.userId._id)">{{ scope.row.userId.nickname }}</span>
+                <span>{{ getTime(scope.row.createdTime) }}</span>
               </div>
-              <div class="tb-t-center">
-                <p v-html="scope.row.contentText"></p>
+              <div class="icon-box">
+                <span><i class="el-icon-view"></i>{{ scope.row.readNum }}</span>
+                <span><i class="el-icon-chat-dot-round"></i>{{ scope.row.commentNum }}</span>
+                <span><i class="el-icon-thumb"></i>{{ scope.row.likeNum }}</span>
               </div>
-              <div class="tb-t-bottom">
-                <div>
-                  <img :src="scope.row.userId.avatar" @click="goToUserDetails(scope.row.userId._id)" />
-                  <span class="nickname" @click="goToUserDetails(scope.row.userId._id)">{{ scope.row.userId.nickname }}</span>
-                  <span>{{ getTime(scope.row.createdTime) }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column width="250px">
+          <template slot-scope="scope">
+            <div class="demo-image__preview">
+              <el-image style="width: 250px; height: 150px" :src="scope.row.articleImgs[0]" :preview-src-list="scope.row.articleImgs" lazy>
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline"></i>
                 </div>
-                <div class="icon-box">
-                  <span><i class="el-icon-view"></i>{{ scope.row.readNum }}</span>
-                  <span><i class="el-icon-chat-dot-round"></i>{{ scope.row.commentNum }}</span>
-                  <span><i class="el-icon-thumb"></i>{{ scope.row.likeNum }}</span>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column width="250px">
-            <template slot-scope="scope">
-              <div class="demo-image__preview">
-                <el-image style="width: 250px; height: 150px" :src="scope.row.articleImgs[0]" :preview-src-list="[scope.row.articleImg]" lazy>
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline"></i>
-                  </div>
-                </el-image>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-      <div class="page-box">
+              </el-image>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="page-box" v-if="tableData.length">
         <el-pagination :current-page.sync="nowPageNum" background layout="prev, pager, next" :total="Math.ceil(total / 2)" @current-change="currentChange"></el-pagination>
       </div>
     </div>
@@ -74,7 +71,7 @@ export default {
   methods: {
     async getData() {
       let res = await getArticleData(this.searchForm);
-      if (res.code === 200) {
+      if (res && res.code === 200) {
         this.tableData = res.data.articleData;
         this.highLight(this.tableData);
         this.total = res.data.total;
@@ -226,11 +223,6 @@ export default {
   .page-box {
     text-align: center;
     margin: 20px 0px 40px 0px;
-  }
-}
-.index ::v-deep {
-  .el-backtop {
-    visibility: visible;
   }
 }
 </style>

@@ -3,7 +3,7 @@
     <!-- 评论输入款 -->
     <div class="my-box">
       <div class="avatar-input">
-        <img :src="avatarUrl" alt="" />
+        <img :src="avatarUrl" alt="" v-if="getToken" />
         <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 2 }" placeholder="请输入评论内容" @focus="commentInputFocus" maxlength="200" v-model="commentArticle">
         </el-input>
       </div>
@@ -189,7 +189,7 @@ export default {
         this.showOneComment = index;
         this.showChildComment = "";
       } else {
-        this.$utils.elMessageBox("您还未登录，请登录后再试！！！", "error", 5000);
+        this.$utils.elMessageBox("您还未登录，请登录后再试！！！", "error");
       }
     },
     //点击评论文章输入框
@@ -200,7 +200,7 @@ export default {
         this.showBtn = true;
         this.showChildComment = "";
       } else {
-        this.$utils.elMessageBox("您还未登录，请登录后再试！！！", "error", 5000);
+        this.$utils.elMessageBox("您还未登录，请登录后再试！！！", "error");
       }
     },
     //取消评论
@@ -308,7 +308,7 @@ export default {
         //对应位置插入回复框
         this.showOneComment = -1;
       } else {
-        this.$utils.elMessageBox("您还未登录，请登录后再试！！！", "error", 5000);
+        this.$utils.elMessageBox("您还未登录，请登录后再试！！！", "error");
       }
     },
     goUserDetail(userId) {
@@ -454,7 +454,7 @@ export default {
   margin-bottom: 20px;
   .avatar-input {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     img {
       width: 40px;

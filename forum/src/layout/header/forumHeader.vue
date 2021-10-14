@@ -14,7 +14,7 @@
       <el-button type="success" @click="$router.push('/login')">登录</el-button>
     </div>
     <div class="my-box" v-else>
-      <img :src="avatarUrl" alt="" @mouseenter="ifShowAvatar = false" v-show="ifShowAvatar" />
+      <img :src="avatarUrl" alt=" " @mouseenter="ifShowAvatar = false" v-show="ifShowAvatar" />
       <el-button type="danger" @click="sendBtn" :class="{ opacitySend: $route.name == 'SendArticle' || $route.name == 'UpdateArticle' }">发布</el-button>
     </div>
     <div @mouseenter="ifShowAvatar = false" @mouseleave="ifShowAvatar = true" v-show="!ifShowAvatar" class="avatar-hover">

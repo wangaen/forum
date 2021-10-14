@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 //超时时间
-axios.defaults.timeout = 15000;
+axios.defaults.timeout = 15 * 1000;
 
 //全局请求拦截处理
 axios.interceptors.request.use(
@@ -32,7 +32,7 @@ axios.interceptors.response.use(
       if (router.currentRoute.path !== "/" && router.currentRoute.path !== "/login") {
         router.push("/")
       }
-      return $utils.elMessageBox("登录失效，请重新登录-全局", "warning")
+      return $utils.elMessageBox("登录失效，请重新登录-全局", "warning", 3000, true)
     }
     if ([-1, 400, 401].includes(response.data.code)) {
       return $utils.elMessageBox(response.data.msg, "warning")
@@ -41,7 +41,11 @@ axios.interceptors.response.use(
   },
   error => {
     if (JSON.stringify(error).includes(" Request failed")) {
-      $utils.elMessageBox("请求错误，请稍后再试-全局", "error")
+      $utils.elMessageBox("请求错误，请稍后再试-全局", "error", 3000, true)
+    } else if (JSON.stringify(error).includes("Network Error")) {
+      $utils.elMessageBox("网络异常，请稍后再试-全局", "error", 3000, true)
+    } else if (JSON.stringify(error).includes("Error: timeout")) {
+      $utils.elMessageBox("请求超时，请稍后再试-全局", "error", 3000, true)
     }
     return Promise.reject(error);
   }

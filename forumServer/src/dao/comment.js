@@ -32,10 +32,10 @@ router.delete('/comment/delete', async (req, res) => {
 })
 
 // //获取某一篇文章下的所有评论
-router.get('/comment/allData', async (req, res) => {
-  const isNullStr = tools.checkNull(req.query)
+router.post('/comment/allData', async (req, res) => {
+  const isNullStr = tools.checkNull(req.body)
   if (isNullStr) return res.status(200).json(tools.response(-1, null, isNullStr))
-  const { pageNum, sortStatus: createdTime, articleId } = req.query
+  const { pageNum, sortStatus: createdTime, articleId } = req.body
   let pNum = (pageNum == 1 ? 0 : (pageNum - 1) * 10)
   try {
     let total = await Comment.find({ articleId, commentGrade: '1' }).countDocuments()

@@ -1,7 +1,7 @@
 <template>
   <div class="avater-main">
     <div class="info-box">
-      <img :src="getUserInfo.avatar" alt="" />
+      <img :src="getUserInfo.avatar" alt=" " />
       <h3 style="padding-top: 40px; margin: 0px">{{ getUserInfo.nickname }}</h3>
     </div>
     <el-menu class="el-menu-vertical-demo" menu-trigger="click" @select="selectMenu">

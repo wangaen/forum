@@ -54,7 +54,17 @@ app.use(
     secret: 'wyl_forum_token',
     algorithms: ['HS256']
   }).unless({
-    path: ['/article/getArticleData', '/api/login', '/api/register']  //不需要验证的接口名称
+    //不需要验证的接口名称
+    path: [
+      "/api/article/getArticleData",
+      '/api/login',
+      '/api/register',
+      "/api/article/getOneArticleInfo",
+      "/api/comment/allData",
+      "/api/article/RaticleReadLike",
+      "/api/article/addReadNum",
+      "/api/article/allArticles"
+    ]
   }),
   user,
   comment,

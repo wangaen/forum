@@ -6,11 +6,11 @@ const Like = require('../schema/like')
 const tools = require("../tools/index")
 
 //获取对应用户的所有文章
-router.get('/article/allArticles', async (req, res) => {
+router.post('/article/allArticles', async (req, res) => {
   try {
-    const isNullStr = tools.checkNull(req.query)
+    const isNullStr = tools.checkNull(req.body)
     if (isNullStr) return res.status(200).json(tools.response(-1, null, isNullStr))
-    let { sortStatus, pageNum, userId } = req.query
+    let { sortStatus, pageNum, userId } = req.body
     let sortLabel = tools.getSortObj(sortStatus);
     let skipNum = (pageNum == 1 ? 0 : (pageNum - 1) * 10)
     let data = await Article.find({ userId }, { contentHtml: 0 }).sort(sortLabel).limit(10).skip(skipNum)
@@ -21,11 +21,11 @@ router.get('/article/allArticles', async (req, res) => {
 })
 
 //获取对应用户的所有文章的总浏览量，点赞总数，文章总数
-router.get('/article/RaticleReadLike', async (req, res) => {
+router.post('/article/RaticleReadLike', async (req, res) => {
   try {
-    const isNullStr = tools.checkNull(req.query)
+    const isNullStr = tools.checkNull(req.body)
     if (isNullStr) return res.status(200).json(tools.response(-1, null, isNullStr))
-    const { userId } = req.query
+    const { userId } = req.body
     let articleTotal = await Article.find({ userId }).countDocuments()
     let likeNum = 0
     let readTotal = 0
@@ -52,8 +52,8 @@ router.get('/article/RaticleReadLike', async (req, res) => {
 })
 
 //文章分页展示
-router.get('/article/getArticleData', async (req, res) => {
-  let { search, pageNum } = req.query
+router.post('/article/getArticleData', async (req, res) => {
+  let { search, pageNum } = req.body
   const isNullStr = tools.checkNull({ pageNum })
   if (isNullStr) return res.status(200).json(tools.response(-1, null, isNullStr))
   let skipNum = (pageNum == 1 ? 0 : (pageNum - 1) * 20)
@@ -70,11 +70,11 @@ router.get('/article/getArticleData', async (req, res) => {
 })
 
 //获取单条文章信息
-router.get('/article/getOneArticleInfo', async (req, res) => {
+router.post('/article/getOneArticleInfo', async (req, res) => {
   try {
-    const isNullStr = tools.checkNull(req.query)
+    const isNullStr = tools.checkNull(req.body)
     if (isNullStr) return res.status(200).json(tools.response(-1, null, isNullStr))
-    const { id: _id } = req.query
+    const { id: _id } = req.body
     let data = await Article.findOne({ _id }, { contentText: 0 }).populate('userId', { password: 0, __v: 0 })
     if (!data) return res.status(200).json(tools.response(-1, null, '给文章不存在'))
     res.status(200).json(tools.response(200, data, '获取成功'))

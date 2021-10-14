@@ -1,5 +1,5 @@
 let mongoose = require('mongoose')
-let api = require('../api/api')
+let Api = require('../api/api')
 // 连接数据库
   mongoose.connect('mongodb://root:000000@127.0.0.1:27017/forum?authSource=admin',
   { 
@@ -52,7 +52,7 @@ var userSchema = new Schema({
   //头像
   avatar: {
     type: String,
-    default: `${api.api}1617899625339-default-moren.png`
+    default: `${Api.api}1617899625339-default-moren.png`
   },
   //性别
   gender: {

@@ -81,8 +81,12 @@ export default {
   },
   async created() {
     //判断是否点赞
-    const res = await isLikeArticle(this.likeForm);
-    this.likeForm.status = res.data;
+    if (this.$store.getters.getToken) {
+      const res = await isLikeArticle(this.likeForm);
+      this.likeForm.status = res.data;
+    } else {
+      this.likeForm.status = false;
+    }
     await this.getData();
     await this.totalRaticleReadLikeApi();
   },
@@ -130,8 +134,8 @@ export default {
       }
     },
     commentNumAdd() {
-      this.getData()
-      this.totalRaticleReadLikeApi()
+      this.getData();
+      this.totalRaticleReadLikeApi();
     },
     goUserDetailsInfo() {
       this.$router.push({ path: `/article/release_manage/${this.userInfo._id}` });

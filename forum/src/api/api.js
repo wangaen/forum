@@ -18,11 +18,11 @@ export const uploadAvatarImgApi = (params) => { return axios.post(`${api}/user/a
  ******************************************  article 文章  *************************************************
  ********************************************************************************************************/
 
-export const getArticleData = (params) => { return axios.get(`${api}/article/getArticleData`, { params }) }; //获取该页的所有文章
-export const getUserAllArticles = (params) => { return axios.get(`${api}/article/allArticles`, { params }) }; //获取对应用户的所有文章
-export const getOneArticleInfo = (params) => { return axios.get(`${api}/article/getOneArticleInfo`, { params }) }; //获取文章信息
+export const getArticleData = (params) => { return axios.post(`${api}/article/getArticleData`, params) }; //获取该页的所有文章
+export const getUserAllArticles = (params) => { return axios.post(`${api}/article/allArticles`, params) }; //获取对应用户的所有文章
+export const getOneArticleInfo = (params) => { return axios.post(`${api}/article/getOneArticleInfo`, params) }; //获取文章信息
 export const articleSendApi = (params) => { return axios.post(`${api}/article/send`, params) };  //发表文章
-export const totalRaticleReadLikeApi = (params) => { return axios.get(`${api}/article/RaticleReadLike`, { params }) };  //获取总浏览量，点赞总数，文章总数
+export const totalRaticleReadLikeApi = (params) => { return axios.post(`${api}/article/RaticleReadLike`, params) };  //获取总浏览量，点赞总数，文章总数
 export const uploadArticleImgApi = (params) => { return axios.post(`${api}/article/uploadImgs`, params) }; //上传文章图片
 export const addReadNumApi = (params) => { return axios.post(`${api}/article/addReadNum`, params) }; //每点击一次文章，浏览量 + 1
 export const articleUpdate = (params) => { return axios.put(`${api}/article/update`, params) }; //修改文章
@@ -32,7 +32,7 @@ export const articleDelete = (params) => { return axios.delete(`${api}/article/d
  ******************************************  comment 评论  *************************************************
  ********************************************************************************************************/
 export const commentAddApi = (params) => { return axios.post(`${api}/comment/add`, params) }; //添加评论
-export const commentGetApi = (params) => { return axios.get(`${api}/comment/allData`, { params }) }; //获取某一篇文章下的评论
+export const commentGetApi = (params) => { return axios.post(`${api}/comment/allData`, params) }; //获取某一篇文章下的评论
 export const commentDelete = (params) => { return axios.delete(`${api}/comment/delete`, { params }) }; //删除评论
 
 /********************************************************************************************************

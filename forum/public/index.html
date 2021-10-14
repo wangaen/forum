@@ -5,36 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link rel="icon" href="<%= BASE_URL %>favicon.png">
-  <title>
-    <%= htmlWebpackPlugin.options.title %>
-  </title>
-  <style>
-    body {
-      margin: 0px;
-      padding: 0px;
-    }
-
-    html,
-    body {
-      height: 100%;
-    }
-
-    body>.el-image-viewer__wrapper>.el-image-viewer__close {
-      top: 80px;
-      right: 300px;
-      width: 60px;
-      height: 60px;
-    }
-  </style>
+  <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
-
 <body>
-  <noscript>
-    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
-        Please enable it to continue.</strong>
-  </noscript>
+  <noscript> <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.Please enable it to continue.</strong></noscript>
   <div id="app"></div>
-  <!-- built files will be auto injected -->
 </body>
-
 </html>

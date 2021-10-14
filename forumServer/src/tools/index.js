@@ -9,28 +9,28 @@ module.exports = {
   getSortObj: (num) => {
     let obj = {};
     switch (num) {
-      case '1':
+      case 1:
         obj = { createdTime: -1 };
         break;
-      case '-1':
+      case -1:
         obj = { createdTime: 1 };
         break;
-      case '2':
+      case 2:
         obj = { readNum: -1 };
         break;
-      case '-2':
+      case -2:
         obj = { readNum: 1 };
         break;
-      case '3':
+      case 3:
         obj = { likeNum: -1 };
         break;
-      case '-3':
+      case -3:
         obj = { likeNum: 1 };
         break;
-      case '4':
+      case 4:
         obj = { commentNum: -1 };
         break;
-      case '-4':
+      case -4:
         obj = { commentNum: 1 };
         break;
       default:

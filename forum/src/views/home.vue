@@ -7,8 +7,8 @@
       <el-main>
         <forum-main />
       </el-main>
-      <el-footer>
-        <forum-footer v-show="$route.name === 'Home'" />
+      <el-footer v-if="$route.name === 'Home'">
+        <forum-footer />
       </el-footer>
     </el-container>
   </div>
